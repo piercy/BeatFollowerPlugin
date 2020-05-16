@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using BeatFollower.Models;
 using BS_Utils.Utilities;
 using IPA;
@@ -47,6 +49,11 @@ namespace BeatFollower
             if (string.IsNullOrEmpty(_apiKey))
                 _config.SetString(Name, "ApiKey", defaultApiKey);
 
+            if (!_apiUrl.EndsWith("/"))
+            {
+                _apiUrl += "/";
+            }
+
             log.Debug($"ApiKey: {_apiKey}");
             log.Debug($"ApiUrl: {_apiUrl}");
 
@@ -58,6 +65,8 @@ namespace BeatFollower
         {
             log.Debug("getting key..");
             _apiKey = _config.GetString(Name, "ApiKey");
+
+
         }
 
         private void PluginOnLevelDidFinishEvent(StandardLevelScenesTransitionSetupDataSO levelscenestransitionsetupdataso, LevelCompletionResults levelcompletionresults)
@@ -77,7 +86,7 @@ namespace BeatFollower
         {
             try
             {
-
+                
                 var currentMap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
                 var currentSong = currentMap.difficultyBeatmap.level;
                 if (currentSong.levelID.EndsWith("WIP"))
@@ -99,22 +108,39 @@ namespace BeatFollower
                 activity.SongSubName = currentSong.songSubName;
                 activity.SongAuthorName = currentSong.songAuthorName;
                 activity.LevelAuthorName = currentSong.levelAuthorName;
+                log.Debug($"API: {_apiUrl}");
                 log.Debug($"Sending Activity: {activity.Hash}:{activity.ApiKey}");
                 string json = JsonConvert.SerializeObject(activity);
-                log.Debug("Activity: " + json);
-                UnityWebRequest activityRequest = UnityWebRequest.Post(_apiUrl + "/activity/", json);
 
 
-                byte[] jsonBytes = new System.Text.UTF8Encoding().GetBytes(json);
-                activityRequest.uploadHandler = new UploadHandlerRaw(jsonBytes);
-                activityRequest.SetRequestHeader("Content-Type", "application/json");
-                activityRequest.timeout = 30;
-                activityRequest.SendWebRequest();
+                SharedCoroutineStarter.instance.StartCoroutine(PostRequest(_apiUrl + "activity/", json));
                 log.Debug($"Activity Sent: {activity.Hash}:{_apiKey}");
             }
             catch (Exception ex)
             {
                 log.Error(ex);
+            }
+        }
+        IEnumerator PostRequest(string url, string json)
+        {
+            log.Debug($"POST: {url}:{json}");
+
+            var uwr = new UnityWebRequest(url, "POST");
+            byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
+            uwr.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
+            uwr.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            uwr.SetRequestHeader("Content-Type", "application/json");
+
+            //Send the request then wait here until it returns
+            yield return uwr.SendWebRequest();
+
+            if (uwr.isNetworkError || uwr.isHttpError)
+            {
+                log.Debug("Error While Sending: " + uwr.error);
+            }
+            else
+            {
+               log.Debug("Received: " + uwr.downloadHandler.text);
             }
         }
 
