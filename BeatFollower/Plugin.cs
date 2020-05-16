@@ -1,5 +1,6 @@
 ﻿using System;
 using BeatFollower.Models;
+using BS_Utils.Utilities;
 using IPA;
 using IPA.Config;
 using Newtonsoft.Json;
@@ -19,6 +20,8 @@ namespace BeatFollower
 
         private string _apiUrl;
         private string _apiKey;
+        private string defaultApiKey = "0000000-0000000-0000000-0000000";
+        private BS_Utils.Utilities.Config _config;
 
         [Init]
         public void Init(object nullObject, IPA.Logging.Logger logger)
@@ -31,26 +34,42 @@ namespace BeatFollower
         {
             log.Debug("OnApplicationStart");
 
-            BS_Utils.Utilities.Config config = new BS_Utils.Utilities.Config(Name);
+            
+            _config = new BS_Utils.Utilities.Config(Name);
 
-            _apiKey = config.GetString(Name, "ApiKey");
-            _apiUrl = config.GetString(Name, "ApiUrl");
+            _apiKey = _config.GetString(Name, "ApiKey");
+            _apiUrl = _config.GetString(Name, "ApiUrl");
 
             // Set defaults
             if (string.IsNullOrEmpty(_apiUrl))
-                config.SetString(Name, "ApiUrl", "http://direct.beatfollower.com:3000");
+                _config.SetString(Name, "ApiUrl", "http://direct.beatfollower.com:3000");
 
             if (string.IsNullOrEmpty(_apiKey))
-                config.SetString(Name, "ApiKey", Guid.Empty.ToString());
+                _config.SetString(Name, "ApiKey", defaultApiKey);
 
             log.Debug($"ApiKey: {_apiKey}");
             log.Debug($"ApiUrl: {_apiUrl}");
 
             BS_Utils.Plugin.LevelDidFinishEvent += PluginOnLevelDidFinishEvent;
+            BSEvents.gameSceneLoaded += OnGameSceneLoaded;
+        }
+
+        private void OnGameSceneLoaded()
+        {
+            log.Debug("getting key..");
+            _apiKey = _config.GetString(Name, "ApiKey");
         }
 
         private void PluginOnLevelDidFinishEvent(StandardLevelScenesTransitionSetupDataSO levelscenestransitionsetupdataso, LevelCompletionResults levelcompletionresults)
         {
+
+            _apiKey = _config.GetString(Name, "ApiKey");
+            if (string.IsNullOrEmpty(_apiKey) || _apiKey == defaultApiKey)
+            {
+                log.Debug("API Key is either default or empty");
+                return;
+            }
+
             SubmitActivity(levelcompletionresults);
         }
 
