@@ -23,6 +23,7 @@ namespace BeatFollower
         private string _apiUrl;
         private string _apiKey;
         private string defaultApiKey = "0000000-0000000-0000000-0000000";
+        private string defaultApiUrl = "https://api.beatfollower.com";
         private BS_Utils.Utilities.Config _config;
 
         [Init]
@@ -36,18 +37,29 @@ namespace BeatFollower
         {
             log.Debug("OnApplicationStart");
 
-            
+
             _config = new BS_Utils.Utilities.Config(Name);
 
             _apiKey = _config.GetString(Name, "ApiKey");
             _apiUrl = _config.GetString(Name, "ApiUrl");
 
+            // Clearing out the old address automatically for the testers. It will then set the default
+            if (_apiUrl.StartsWith("http://direct.beatfollower.com"))
+                _apiUrl = null;
+
             // Set defaults
             if (string.IsNullOrEmpty(_apiUrl))
-                _config.SetString(Name, "ApiUrl", "https://api.beatfollower.com");
+            {
+                _config.SetString(Name, "ApiUrl", defaultApiUrl);
+                _apiUrl = defaultApiUrl;
+            }
+
+
 
             if (string.IsNullOrEmpty(_apiKey))
+            {
                 _config.SetString(Name, "ApiKey", defaultApiKey);
+            }
 
             if (!_apiUrl.EndsWith("/"))
             {
