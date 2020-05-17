@@ -44,7 +44,7 @@ namespace BeatFollower
 
             // Set defaults
             if (string.IsNullOrEmpty(_apiUrl))
-                _config.SetString(Name, "ApiUrl", "http://direct.beatfollower.com:3000");
+                _config.SetString(Name, "ApiUrl", "https://api.beatfollower.com");
 
             if (string.IsNullOrEmpty(_apiKey))
                 _config.SetString(Name, "ApiKey", defaultApiKey);
