@@ -9,7 +9,6 @@ namespace BeatFollower.Models
     public class Activity
     {
         public string Hash { get; set; }
-        public string ApiKey { get; set; }
         public bool PracticeMode { get; set; }
         public bool NoFail { get; set; }
         public bool WipMap { get; set; }
