@@ -3,7 +3,7 @@ A Beat Saber plugin to record activities and song recommendations to your [BeatF
 
 Please raise issues for both the website and the plugin in the issues section.
 
-To get start with BeatFollower you will need to install the BeatFollower Plugin to Beat Saber. Hopefully, in the future, the mod will be approved on BeatMods and appear in ModAssistant. However, for the moment you can grab it from the releases section of the GitHub Repository.
+To get started with BeatFollower you will need to install the BeatFollower Plugin to Beat Saber. Hopefully, in the future, the mod will be approved on BeatMods and appear in ModAssistant. However, for the moment you can grab it from the releases section of the GitHub Repository.
 
 ## Prerequisites
 Please make sure to have the following plugins installed:
