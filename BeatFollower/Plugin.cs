@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using BeatFollower.Models;
 using BeatFollower.Services;
+using BeatFollower.UI;
 using BS_Utils.Utilities;
 using IPA;
 using IPA.Config;
@@ -13,13 +14,14 @@ using UnityEngine.Networking;
 namespace BeatFollower
 {
 
-    [Plugin(RuntimeOptions.SingleStartInit)]
+    [Plugin(RuntimeOptions.DynamicInit)]
     public class Plugin
     {
         internal static Plugin instance { get; private set; }
         internal static string Name => "BeatFollower";
 
         private BeatFollowerService _beatFollowerService;
+        private EndScreen _endScreen;
         [Init]
         public void Init(object nullObject, IPA.Logging.Logger logger)
         {
@@ -30,12 +32,43 @@ namespace BeatFollower
         public void OnApplicationStart()
         {
             Logger.log.Debug("OnApplicationStart");
-            _beatFollowerService = new BeatFollowerService();
-       
+         
+        }
 
-            BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh += BSEventsOnearlyMenuSceneLoadedFresh; 
-            BS_Utils.Plugin.LevelDidFinishEvent += PluginOnLevelDidFinishEvent;
-            BS_Utils.Utilities.BSEvents.gameSceneLoaded += BSEvents_gameSceneLoaded;
+        [OnEnable]
+        public void OnEnable()
+        {
+            try
+            {
+                Logger.log.Debug("BeatFollower Enabled");
+                _beatFollowerService = new BeatFollowerService();
+                _endScreen = new EndScreen();
+                BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh += BSEventsOnearlyMenuSceneLoadedFresh;
+                BS_Utils.Plugin.LevelDidFinishEvent += PluginOnLevelDidFinishEvent;
+                BS_Utils.Utilities.BSEvents.gameSceneLoaded += BSEvents_gameSceneLoaded;
+            }
+            catch (Exception ex)
+            {
+                Logger.log.Error(ex);
+            }
+        }
+
+        [OnDisable]
+        public void OnDisable()
+        {
+            try
+            {
+                Logger.log.Debug("BeatFollower Disabled");
+                _beatFollowerService = null;
+                _endScreen = null;
+                BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh -= BSEventsOnearlyMenuSceneLoadedFresh;
+                BS_Utils.Plugin.LevelDidFinishEvent -= PluginOnLevelDidFinishEvent;
+                BS_Utils.Utilities.BSEvents.gameSceneLoaded -= BSEvents_gameSceneLoaded;
+            }
+            catch (Exception ex)
+            {
+                Logger.log.Error(ex);
+            }
         }
 
         private void BSEventsOnearlyMenuSceneLoadedFresh(ScenesTransitionSetupDataSO obj)
@@ -49,12 +82,12 @@ namespace BeatFollower
             //#pragma warning restore CS0618
 
             Logger.log.Debug("Start Setup");
-            UI.EndScreen.instance.Setup();
+            _endScreen.Setup();
         }
 
         private void BSEvents_gameSceneLoaded()
         {
-            UI.EndScreen.instance.LastSong = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level;
+           _endScreen.LastSong = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level;
         }
 
         private void PluginOnLevelDidFinishEvent(StandardLevelScenesTransitionSetupDataSO levelscenestransitionsetupdataso, LevelCompletionResults levelcompletionresults)
