@@ -4,16 +4,12 @@ using System.Reflection;
 using BeatFollower.Services;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Components;
-using BeatSaberMarkupLanguage.ViewControllers;
-using TMPro;
 using UnityEngine;
 
 namespace BeatFollower.UI
 {
-    internal class EndScreen : PersistentSingleton<EndScreen>
+    public class EndScreen : MonoBehaviour
     {
-        public static IPA.Logging.Logger log;
         private BeatFollowerService _beatFollowerService;
         public IBeatmapLevel LastSong { get; set; }
 
@@ -29,15 +25,13 @@ namespace BeatFollower.UI
             
         }
 
-        internal void Setup()
+        public void Setup()
         {
             try
             {
                 var resultsView = Resources.FindObjectsOfTypeAll<ResultsViewController>().FirstOrDefault();
                 if (!resultsView) return;
-                BSMLParser.instance.Parse(
-                    BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen.bsml"),
-                    resultsView.gameObject, this);
+                var param = BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen.bsml"), resultsView.gameObject, this);
             }
             catch (Exception ex)
             {
