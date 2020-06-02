@@ -4,19 +4,29 @@ using System.Reflection;
 using BeatFollower.Services;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Components;
 using UnityEngine;
 
 namespace BeatFollower.UI
 {
-    public class EndScreen : MonoBehaviour
+    public class EndScreen : NotifiableSingleton<EndScreen>
     {
         private BeatFollowerService _beatFollowerService;
         public IBeatmapLevel LastSong { get; set; }
 
         const string Name = "BeatFollower";
         private BS_Utils.Utilities.Config _config;
-
-
+        private bool recommendInteractable = true;
+        [UIValue("recommendInteractable")]
+        public bool RecommendInteractable
+        {
+            get => recommendInteractable;
+            set
+            {
+                recommendInteractable = value;
+                NotifyPropertyChanged();
+            }
+        }
         [UIAction("recommend-pressed")]
         private void RecommendPressed()
         {
@@ -26,7 +36,9 @@ namespace BeatFollower.UI
             Logger.log.Debug("Got Service.");
 
             _beatFollowerService.SubmitRecommendation(LastSong);
-            
+            RecommendInteractable = false;
+
+
         }
 
         public void Setup()
@@ -69,6 +81,9 @@ namespace BeatFollower.UI
         }
 
 
-
+        public void EnableRecommmendButton()
+        {
+            RecommendInteractable = true;
+        }
     }
 }

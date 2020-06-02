@@ -1,6 +1,6 @@
 ﻿   <vertical anchor-pos-x="-65" anchor-pos-y="-30" vertical-fit="PreferredSize">
      <text text="BeatFollower" align="Center"></text>
      <horizontal horizontal-fit='PreferredSize'>
-       <icon-button icon='BeatFollower.Assets.Share.png' id="recommendButton" on-click="recommend-pressed" align="Center" pref-width='12' hover-hint='Recommend on BeatFollower' min-width='5' />
+       <icon-button icon='BeatFollower.Assets.Share.png' id="recommendButton" on-click="recommend-pressed" align="Center" pref-width='12' hover-hint='Recommend on BeatFollower' min-width='5' interactable="~recommendInteractable" />
      </horizontal>
    </vertical>
