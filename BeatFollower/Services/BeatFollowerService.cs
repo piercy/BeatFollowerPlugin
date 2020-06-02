@@ -71,9 +71,25 @@ namespace BeatFollower.Services
                     return;
                 }
 
+                var customLevel = true;
+
+                if (!(currentSong is CustomBeatmapLevel))
+                {
+                    customLevel = false; // OST Level
+                    Logger.log.Debug("OST Level");
+                }
+
                 var activity = new Activity();
 
-                activity.Hash = SongCore.Utilities.Hashing.GetCustomLevelHash(currentSong as CustomPreviewBeatmapLevel);
+                if (customLevel)
+                    activity.Hash =
+                        SongCore.Utilities.Hashing.GetCustomLevelHash(currentSong as CustomPreviewBeatmapLevel);
+                else
+                {
+                    activity.Hash = currentSong.levelID;
+                    activity.Ost = true;
+                }
+
                 activity.NoFail = currentMap.gameplayModifiers.noFail;
                 activity.WipMap = currentSong.levelID.EndsWith("WIP");
                 activity.PracticeMode = currentMap.practiceSettings != null;
