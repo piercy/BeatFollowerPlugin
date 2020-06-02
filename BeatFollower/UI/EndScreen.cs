@@ -53,7 +53,9 @@ namespace BeatFollower.UI
 
                 var resultsView = Resources.FindObjectsOfTypeAll<ResultsViewController>().FirstOrDefault();
                 if (!resultsView) return;
-                switch (position.ToLower())
+
+                // Replaces spaces to be more friendly, in case a user types "Bottom Left" rather than "BottomLeft"
+                switch (position.ToLower().Replace(" ", ""))
                 {
                     case "topleft":
                         BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopLeft.bsml"), resultsView.gameObject, this);
