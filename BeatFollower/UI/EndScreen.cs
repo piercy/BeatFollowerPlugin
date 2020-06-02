@@ -13,6 +13,10 @@ namespace BeatFollower.UI
         private BeatFollowerService _beatFollowerService;
         public IBeatmapLevel LastSong { get; set; }
 
+        const string Name = "BeatFollower";
+        private BS_Utils.Utilities.Config _config;
+
+
         [UIAction("recommend-pressed")]
         private void RecommendPressed()
         {
@@ -29,9 +33,34 @@ namespace BeatFollower.UI
         {
             try
             {
+                _config = new BS_Utils.Utilities.Config(Name);
+
+                var position = _config.GetString(Name, "Position", "BottomLeft");
+                if (string.IsNullOrEmpty(position))
+                    position = "BottomLeft";
+
                 var resultsView = Resources.FindObjectsOfTypeAll<ResultsViewController>().FirstOrDefault();
                 if (!resultsView) return;
-                var param = BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen.bsml"), resultsView.gameObject, this);
+                switch (position.ToLower())
+                {
+                    case "topleft":
+                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopLeft.bsml"), resultsView.gameObject, this);
+                        break;
+                    case "topright":
+                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopRight.bsml"), resultsView.gameObject, this);
+                        break;
+                    case "bottomright":
+                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomRight.bsml"), resultsView.gameObject, this);
+                        break;
+                    case "bottomleft":
+                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomLeft.bsml"), resultsView.gameObject, this);
+                        break;
+                    default: // opted for duplication for clarity and future proofing
+                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomLeft.bsml"), resultsView.gameObject, this);
+                        break;
+
+                }
+               
             }
             catch (Exception ex)
             {

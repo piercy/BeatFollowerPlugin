@@ -18,12 +18,13 @@ namespace BeatFollower.Services
         private string defaultApiUrl = "https://api.beatfollower.com";
         private string _apiUrl;
         private string _apiKey;
+        private string _position;
         private BS_Utils.Utilities.Config _config;
         public BeatFollowerService()
         {
 
             _config = new BS_Utils.Utilities.Config(Name);
-
+             _position = _config.GetString(Name, "Position");
             _apiKey = _config.GetString(Name, "ApiKey");
             _apiUrl = _config.GetString(Name, "ApiUrl");
 
@@ -38,6 +39,10 @@ namespace BeatFollower.Services
                 _apiUrl = defaultApiUrl;
             }
 
+            if(string.IsNullOrEmpty(_position))
+            {
+                _config.SetString(Name, "Position", "BottomLeft");
+            }
 
 
             if (string.IsNullOrEmpty(_apiKey))
