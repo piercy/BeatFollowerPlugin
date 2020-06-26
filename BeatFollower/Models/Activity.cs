@@ -19,5 +19,8 @@ namespace BeatFollower.Models
         public string SongAuthorName { get; set; }
         public string LevelAuthorName { get; set; }
         public bool Ost { get; set; }
+        public bool Is360 { get; set; }
+        public bool Is90 { get; set; }
+        public bool OneSaber { get; set; }
     }
 }

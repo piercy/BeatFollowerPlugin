@@ -71,6 +71,14 @@ namespace BeatFollower.Services
                     return;
                 }
 
+                Logger.log.Debug(currentMap.difficultyBeatmap.beatmapData.beatmapEventData.ToString());
+                Logger.log.Debug(BS_Utils.Gameplay.Gamemode.GameMode);
+                Logger.log.Debug("ss:" + BS_Utils.Gameplay.ScoreSubmission.Disabled.ToString());
+                Logger.log.Debug("ss:" + BS_Utils.Gameplay.ScoreSubmission.LastDisablers.FirstOrDefault());
+                Logger.log.Debug("sr:" + BS_Utils.Gameplay.ScoreSubmission.LastDisabledModString.ToString());
+                
+
+                Logger.log.Debug(BS_Utils.Gameplay.Gamemode.SelectedCharacteristic.requires360Movement.ToString());
                 var customLevel = true;
 
                 if (!(currentSong is CustomBeatmapLevel))
@@ -90,6 +98,9 @@ namespace BeatFollower.Services
                     activity.Ost = true;
                 }
 
+                activity.Is90 = BS_Utils.Gameplay.Gamemode.GameMode.Equals("90Degree");
+                activity.Is360 = (BS_Utils.Gameplay.Gamemode.GameMode.Equals("360Degree") || currentMap.difficultyBeatmap.beatmapData.spawnRotationEventsCount > 0) && !activity.Is90;
+                activity.OneSaber = BS_Utils.Gameplay.Gamemode.GameMode.Equals("OneSaber");
                 activity.NoFail = currentMap.gameplayModifiers.noFail;
                 activity.WipMap = currentSong.levelID.EndsWith("WIP");
                 activity.PracticeMode = currentMap.practiceSettings != null;
