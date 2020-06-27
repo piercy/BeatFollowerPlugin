@@ -58,27 +58,28 @@ namespace BeatFollower.Services
             Logger.log.Debug($"ApiUrl: {_apiUrl}");
         }
 
-        public void SubmitActivity(LevelCompletionResults.LevelEndStateType levelEndState)
+        public void SubmitActivity(LevelCompletionResults levelCompletionResults)
         {
             try
             {
+                LevelCompletionResults.LevelEndStateType levelEndState = levelCompletionResults.levelEndStateType;
                 var currentMap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
                 var currentSong = currentMap.difficultyBeatmap.level;
-
+                
                 if (currentSong.IsWip())
                 {
                     Logger.log.Debug("WIP so not sending activity.");
                     return;
                 }
 
-                Logger.log.Debug(currentMap.difficultyBeatmap.beatmapData.beatmapEventData.ToString());
-                Logger.log.Debug(BS_Utils.Gameplay.Gamemode.GameMode);
-                Logger.log.Debug("ss:" + BS_Utils.Gameplay.ScoreSubmission.Disabled.ToString());
-                Logger.log.Debug("ss:" + BS_Utils.Gameplay.ScoreSubmission.LastDisablers.FirstOrDefault());
-                Logger.log.Debug("sr:" + BS_Utils.Gameplay.ScoreSubmission.LastDisabledModString.ToString());
-                
+                // Calculations for acc
+                var modifiedScore = levelCompletionResults.gameplayModifiersModel.GetModifiedScoreForGameplayModifiers(levelCompletionResults.rawScore, levelCompletionResults.gameplayModifiers);
+                var maxScore = ScoreModel.MaxRawScoreForNumberOfNotes(currentMap.difficultyBeatmap.beatmapData.notesCount);
+                var multiplier = levelCompletionResults.gameplayModifiersModel.GetTotalMultiplier(levelCompletionResults.gameplayModifiers);
+                var acc = modifiedScore / (maxScore * multiplier);
+                var normalizedAcc = (acc * 100.0f);
 
-                Logger.log.Debug(BS_Utils.Gameplay.Gamemode.SelectedCharacteristic.requires360Movement.ToString());
+
                 var customLevel = true;
 
                 if (!(currentSong is CustomBeatmapLevel))
@@ -87,29 +88,39 @@ namespace BeatFollower.Services
                     Logger.log.Debug("OST Level");
                 }
 
-                var activity = new Activity();
+                var activity = new Activity
+                {
+                    NoFail = currentMap.gameplayModifiers.noFail,
+                    WipMap = currentSong.levelID.EndsWith("WIP"),
+                    PracticeMode = currentMap.practiceSettings != null,
+                    Difficulty = currentMap.difficultyBeatmap.difficulty,
+                    EndType = levelEndState,
+                    SongName = currentSong.songName,
+                    SongSubName = currentSong.songSubName,
+                    SongAuthorName = currentSong.songAuthorName,
+                    LevelAuthorName = currentSong.levelAuthorName,
+                    FullCombo = levelCompletionResults.fullCombo,
+                    EndSongTime = levelCompletionResults.endSongTime.ToString("##.##"),
+                    SongDuration = levelCompletionResults.songDuration.ToString("##.##"),
+                    Accuracy = normalizedAcc.ToString("##.##"),
+                    Is90 = BS_Utils.Gameplay.Gamemode.GameMode.Equals("90Degree")
+                };
+                // cant be 90 and 360 at the same time, so if weve already detected 90, cant be 360, this is a best guess effort
+                activity.Is360 = (BS_Utils.Gameplay.Gamemode.GameMode.Equals("360Degree") || currentMap.difficultyBeatmap.beatmapData.spawnRotationEventsCount > 0) && !activity.Is90;
+                activity.OneSaber = BS_Utils.Gameplay.Gamemode.GameMode.Equals("OneSaber");
 
                 if (customLevel)
+                {
                     activity.Hash =
                         SongCore.Utilities.Hashing.GetCustomLevelHash(currentSong as CustomPreviewBeatmapLevel);
+                }
                 else
                 {
                     activity.Hash = currentSong.levelID;
                     activity.Ost = true;
                 }
 
-                activity.Is90 = BS_Utils.Gameplay.Gamemode.GameMode.Equals("90Degree");
-                activity.Is360 = (BS_Utils.Gameplay.Gamemode.GameMode.Equals("360Degree") || currentMap.difficultyBeatmap.beatmapData.spawnRotationEventsCount > 0) && !activity.Is90;
-                activity.OneSaber = BS_Utils.Gameplay.Gamemode.GameMode.Equals("OneSaber");
-                activity.NoFail = currentMap.gameplayModifiers.noFail;
-                activity.WipMap = currentSong.levelID.EndsWith("WIP");
-                activity.PracticeMode = currentMap.practiceSettings != null;
-                activity.Difficulty = currentMap.difficultyBeatmap.difficulty;
-                activity.EndType = levelEndState;
-                activity.SongName = currentSong.songName;
-                activity.SongSubName = currentSong.songSubName;
-                activity.SongAuthorName = currentSong.songAuthorName;
-                activity.LevelAuthorName = currentSong.levelAuthorName;
+
                 string json = JsonConvert.SerializeObject(activity);
 
                 SharedCoroutineStarter.instance.StartCoroutine(PostRequest(_apiUrl + "activity/", json));

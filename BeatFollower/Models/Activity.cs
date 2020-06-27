@@ -22,5 +22,9 @@ namespace BeatFollower.Models
         public bool Is360 { get; set; }
         public bool Is90 { get; set; }
         public bool OneSaber { get; set; }
+        public bool FullCombo { get; set; }
+        public string EndSongTime { get; set; }
+        public string Accuracy { get; set; }
+        public string SongDuration { get; set; }
     }
 }

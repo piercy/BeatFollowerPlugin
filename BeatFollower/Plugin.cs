@@ -93,7 +93,7 @@ namespace BeatFollower
 
         private void PluginOnLevelDidFinishEvent(StandardLevelScenesTransitionSetupDataSO levelscenestransitionsetupdataso, LevelCompletionResults levelcompletionresults)
         {
-            _beatFollowerService.SubmitActivity(levelcompletionresults.levelEndStateType);
+            _beatFollowerService.SubmitActivity(levelcompletionresults);
         }
 
         [OnExit]
