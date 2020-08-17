@@ -87,12 +87,13 @@ namespace BeatFollower
 
         private void BSEvents_gameSceneLoaded()
         {
-           _endScreen.LastSong = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level;
+            _endScreen.EnableRecommmendButton();
+            _endScreen.LastSong = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level;
         }
 
         private void PluginOnLevelDidFinishEvent(StandardLevelScenesTransitionSetupDataSO levelscenestransitionsetupdataso, LevelCompletionResults levelcompletionresults)
         {
-            _beatFollowerService.SubmitActivity(levelcompletionresults.levelEndStateType);
+            _beatFollowerService.SubmitActivity(levelcompletionresults);
         }
 
         [OnExit]

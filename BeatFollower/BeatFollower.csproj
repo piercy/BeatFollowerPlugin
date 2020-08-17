@@ -139,7 +139,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildTargets.targets" />
-    <EmbeddedResource Include="UI\EndScreen.bsml" />
+    <EmbeddedResource Include="UI\EndScreen-TopLeft.bsml" />
+    <EmbeddedResource Include="UI\EndScreen-BottomLeft.bsml" />
+    <EmbeddedResource Include="UI\EndScreen-BottomRight.bsml" />
+    <EmbeddedResource Include="UI\EndScreen-TopRight.bsml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
