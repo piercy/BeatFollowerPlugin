@@ -16,7 +16,8 @@ namespace BeatFollower.Installers
     {
         public void Install(DiContainer container, GameObject source)
         {
-            container.Install<BeatFollowerMenuInstaller>();
+            if (BeatFollowerInstaller.firstInstallHappened)
+                container.Install<BeatFollowerMenuInstaller>();
         }
     }
 }
