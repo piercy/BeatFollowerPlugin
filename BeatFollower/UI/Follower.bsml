@@ -1,5 +1,0 @@
-﻿  <horizontal horizontal-fit='PreferredSize' background="round-rect-panel" background-color="#0000FF" pref-width="100"  child-control-width='false'>
-    <image horizontal-fit='PreferredSize' vertical-fit='PreferredSize' min-width='10' pref-width='10' pref-height='10' min-height='10' src="https://static-cdn.jtvnw.net/jtv_user_pictures/cecc0819-b7df-4e7d-8db8-9695e241267c-profile_image-300x300.png" />
-    <text  horizontal-fit='PreferredSize' vertical-fit='PreferredSize' pref-width='80' text="PiercyTTV" font-size='6'></text>
-    <icon-button icon='BeatFollower.Assets.Share.png'  hover-hint='Recommend on BeatFollower' vertical-fit='PreferredSize' horizontal-fit='PreferredSize' min-width='10' pref-width='10' pref-height='10' min-height='10' />
-  </horizontal>

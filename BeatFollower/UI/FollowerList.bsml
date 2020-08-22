@@ -1,0 +1,24 @@
+﻿<stack vertical-fit='Unconstrained'>
+  <vertical vertical-fit='Unconstrained'>
+
+      <horizontal bg='panel-top' pad-left='15' pad-right='15' horizontal-fit='PreferredSize'>
+        <text text='Following' align='Center' font-size='8'/>
+      </horizontal>
+    <vertical>
+      <pg-button dir='Up' click-event='follower-list#PageUp'/>
+      <stack>
+        <custom-list visible-cells='5' cell-size='10' id='follower-list' contents='followers'>
+          <stack vertical-fit='Unconstrained'>
+            <horizontal child-expand-width='false' vertical-fit='Unconstrained'>
+              <raw-image id='follower-image' pref-width='10'/>
+              <vertical horizontal-fit='Unconstrained'>
+                <text text='~follower-name' align='MidlineLeft' font-size='4' />
+              </vertical>
+            </horizontal>
+          </stack>
+        </custom-list>
+      </stack>
+      <pg-button dir='Down' click-event='follower-list#PageDown'/>
+    </vertical>
+  </vertical>
+</stack>
