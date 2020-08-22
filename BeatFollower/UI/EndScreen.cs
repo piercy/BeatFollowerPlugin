@@ -65,25 +65,9 @@ namespace BeatFollower.UI
                 if (!_resultsViewController) return;
 
                 // Replaces spaces to be more friendly, in case a user types "Bottom Left" rather than "BottomLeft"
-                switch (position.ToLower().Replace(" ", ""))
-                {
-                    case "topleft":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopLeft.bsml"), _resultsViewController.gameObject, this);
-                        break;
-                    case "topright":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopRight.bsml"), _resultsViewController.gameObject, this);
-                        break;
-                    case "bottomright":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomRight.bsml"), _resultsViewController.gameObject, this);
-                        break;
-                    case "bottomleft":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomLeft.bsml"), _resultsViewController.gameObject, this);
-                        break;
-                    default: // opted for duplication for clarity and future proofing
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomLeft.bsml"), _resultsViewController.gameObject, this);
-                        break;
-
-                }
+                var pos = position.ToLower().Replace(" ", "");
+                if (pos != "bottomleft" || pos != "bottomright" || pos != "topleft" || pos != "topright") pos = "bottomleft";
+                BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), $"BeatFollower.UI.EndScreen-{pos}.bsml"), _resultsViewController.gameObject, this);
             }
             catch (Exception ex)
             {
