@@ -146,11 +146,13 @@
     <Compile Include="Models\Recommendation.cs" />
     <Compile Include="Services\BeatFollowerService.cs" />
     <Compile Include="Services\EventService.cs" />
+    <Compile Include="UI\BeatFollowerViewController.cs" />
     <Compile Include="UI\EndScreen.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\ModFlowCoordinator.cs" />
     <Compile Include="Utilities\ExtensionMethods.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +164,8 @@
     <EmbeddedResource Include="UI\EndScreen-bottomleft.bsml" />
     <EmbeddedResource Include="UI\EndScreen-bottomright.bsml" />
     <EmbeddedResource Include="UI\EndScreen-topright.bsml" />
+    <EmbeddedResource Include="UI\BeatFollowerView.bsml" />
+    <EmbeddedResource Include="UI\Follower.bsml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -170,6 +174,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="BuildTargets.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo F|xcopy /y "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
