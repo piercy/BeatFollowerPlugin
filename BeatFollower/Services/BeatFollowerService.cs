@@ -53,7 +53,6 @@ namespace BeatFollower.Services
             {
                 _apiUrl += "/";
             }
-            Logger.log.Debug($"ApiKey: {_apiKey}");
             Logger.log.Debug($"ApiUrl: {_apiUrl}");
         }
 
