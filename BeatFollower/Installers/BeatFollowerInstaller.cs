@@ -1,5 +1,8 @@
 ﻿using BS_Utils.Utilities;
 using BeatFollower.Services;
+using BeatFollower.UI;
+using BeatSaberMarkupLanguage;
+using SiraUtil.Zenject;
 
 namespace BeatFollower.Installers
 {
@@ -13,6 +16,10 @@ namespace BeatFollower.Installers
             Container.BindInterfacesAndSelfTo<EventService>().AsSingle();
             Container.BindInterfacesAndSelfTo<BeatFollowerService>().AsSingle().NonLazy();
             Container.BindInstance(new Config(name)).WithId($"{name} Config").AsSingle();
+
+
+            var beatFollowerViewController = BeatSaberUI.CreateViewController<BeatFollowerViewController>();
+            Container.ForceBindComponent<BeatFollowerViewController>(beatFollowerViewController);
 
             firstInstallHappened = true;
         }

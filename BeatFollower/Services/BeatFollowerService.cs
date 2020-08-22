@@ -3,8 +3,10 @@ using Zenject;
 using Newtonsoft.Json;
 using BS_Utils.Utilities;
 using System.Collections;
+using System.Collections.Generic;
 using BeatFollower.Models;
 using BeatFollower.Utilities;
+using IPA.Config.Data;
 using UnityEngine.Networking;
 
 namespace BeatFollower.Services
@@ -154,6 +156,36 @@ namespace BeatFollower.Services
             catch (Exception ex)
             {
                 Logger.log.Error(ex);
+            }
+        }
+
+        public void GetFollowing(Action<List<Follower>> callback)
+        {
+            Logger.log.Debug("Called GetFollowing");
+            var url = _apiUrl + "following";
+            SharedCoroutineStarter.instance.StartCoroutine(GetRequest(url, response =>
+            {
+                var following = JsonConvert.DeserializeObject<List<Follower>>(response);
+                callback?.Invoke(following);
+            }));
+        }
+        IEnumerator GetRequest(string url, Action<string> callback)
+        {
+            Logger.log.Debug("Calling : " + url);
+            UnityWebRequest www = UnityWebRequest.Get(url);
+            www.SetRequestHeader("ApiKey", _apiKey);
+            yield return www.SendWebRequest();
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Logger.log.Debug($"Error getting: {url}");
+                Logger.log.Debug(www.error);
+            }
+            else
+            {
+                string responseString = www.downloadHandler.text;
+                Logger.log.Debug("Response : " + responseString);
+                callback?.Invoke(responseString);
+                
             }
         }
 

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using BeatFollower.Models;
+using BeatFollower.Services;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
@@ -15,31 +16,38 @@ namespace BeatFollower.UI
 {
     [HotReload(@"C:\working\BeatFollowerPlugin\BeatFollower\UI\FollowerList.bsml")]
     [ViewDefinition("BeatFollower.UI.FollowerList.bsml")]
-
-
-
-
     public class BeatFollowerViewController : BSMLAutomaticViewController // BSMLResourceViewController
     {
+        private BeatFollowerService _beatFollowerService;
+
         [UIComponent("follower-list")]
         public CustomCellListTableData followerList;
 
         [UIValue("followers")]
         public List<object> followersUiList = new List<object>();
 
+
+        public BeatFollowerViewController(BeatFollowerService beatFollowerService)
+        {
+            _beatFollowerService = beatFollowerService;
+        }
+
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
             base.DidActivate(firstActivation, activationType);
-
-            SetFollowers(new List<Follower>()
+            Logger.log.Debug("IN VC");
+            if (firstActivation)
             {
-                new Follower("PiercyTTV","https://static-cdn.jtvnw.net/jtv_user_pictures/cecc0819-b7df-4e7d-8db8-9695e241267c-profile_image-300x300.png"),
-                new Follower("Acetari","https://static-cdn.jtvnw.net/jtv_user_pictures/45c580d5-e3e5-4900-8309-c8816b16339a-profile_image-300x300.png"),
+                Logger.log.Debug("Called BeatFollowerService");
+                if(_beatFollowerService == null)
+                    Logger.log.Debug("BeatFollowerService is null");
 
-            });
+                _beatFollowerService.GetFollowing(SetFollowers);
+            }
         }
         public void SetFollowers(List<Follower> followers)
         {
+            Logger.log.Debug("Called SetFollowers");
             followersUiList.Clear();
 
             if (followers != null)
