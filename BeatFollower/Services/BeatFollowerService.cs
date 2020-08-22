@@ -1,17 +1,15 @@
 ﻿using System;
+using Zenject;
+using Newtonsoft.Json;
+using BS_Utils.Utilities;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BeatFollower.Models;
 using BeatFollower.Utilities;
-using Newtonsoft.Json;
 using UnityEngine.Networking;
 
 namespace BeatFollower.Services
 {
-    class BeatFollowerService
+    public class BeatFollowerService : IInitializable, IDisposable
     {
         const string Name = "BeatFollower";
         private string defaultApiKey = "0000000-0000000-0000000-0000000";
@@ -19,11 +17,13 @@ namespace BeatFollower.Services
         private string _apiUrl;
         private string _apiKey;
         private string _position;
-        private BS_Utils.Utilities.Config _config;
-        public BeatFollowerService()
-        {
+        private readonly Config _config;
+        private readonly EventService _eventService;
 
-            _config = new BS_Utils.Utilities.Config(Name);
+        public BeatFollowerService([Inject(Id = "BeatFollower Config")] Config config, EventService eventService)
+        {
+            _config = config;
+            _eventService = eventService;
              _position = _config.GetString(Name, "Position");
             _apiKey = _config.GetString(Name, "ApiKey");
             _apiUrl = _config.GetString(Name, "ApiUrl");
@@ -43,7 +43,6 @@ namespace BeatFollower.Services
             {
                 _config.SetString(Name, "Position", "BottomLeft");
             }
-
 
             if (string.IsNullOrEmpty(_apiKey))
             {
@@ -192,8 +191,14 @@ namespace BeatFollower.Services
             }
         }
 
+        public void Initialize()
+        {
+            _eventService.LevelFinished += SubmitActivity;
+        }
 
+        public void Dispose()
+        {
+            _eventService.LevelFinished -= SubmitActivity;
+        }
     }
-   
-    
 }
