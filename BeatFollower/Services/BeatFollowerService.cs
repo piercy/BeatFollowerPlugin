@@ -1,17 +1,16 @@
 ﻿using System;
+using Zenject;
+using Newtonsoft.Json;
+using BS_Utils.Utilities;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BeatFollower.Models;
 using BeatFollower.Utilities;
-using Newtonsoft.Json;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 namespace BeatFollower.Services
 {
-    class BeatFollowerService
+    public class BeatFollowerService : IInitializable, IDisposable
     {
         const string Name = "BeatFollower";
         private string defaultApiKey = "0000000-0000000-0000000-0000000";
@@ -19,11 +18,13 @@ namespace BeatFollower.Services
         private string _apiUrl;
         private string _apiKey;
         private string _position;
-        private BS_Utils.Utilities.Config _config;
-        public BeatFollowerService()
-        {
+        private readonly Config _config;
+        private readonly EventService _eventService;
 
-            _config = new BS_Utils.Utilities.Config(Name);
+        public BeatFollowerService([Inject(Id = "BeatFollower Config")] Config config, EventService eventService)
+        {
+            _config = config;
+            _eventService = eventService;
              _position = _config.GetString(Name, "Position");
             _apiKey = _config.GetString(Name, "ApiKey");
             _apiUrl = _config.GetString(Name, "ApiUrl");
@@ -44,7 +45,6 @@ namespace BeatFollower.Services
                 _config.SetString(Name, "Position", "BottomLeft");
             }
 
-
             if (string.IsNullOrEmpty(_apiKey))
             {
                 _config.SetString(Name, "ApiKey", defaultApiKey);
@@ -54,7 +54,6 @@ namespace BeatFollower.Services
             {
                 _apiUrl += "/";
             }
-            Logger.log.Debug($"ApiKey: {_apiKey}");
             Logger.log.Debug($"ApiUrl: {_apiUrl}");
         }
 
@@ -159,6 +158,36 @@ namespace BeatFollower.Services
             }
         }
 
+        public void GetFollowing(Action<List<Follower>> callback)
+        {
+            Logger.log.Debug("Called GetFollowing");
+            var url = _apiUrl + "following";
+            SharedCoroutineStarter.instance.StartCoroutine(GetRequest(url, response =>
+            {
+                var following = JsonConvert.DeserializeObject<List<Follower>>(response);
+                callback?.Invoke(following);
+            }));
+        }
+        IEnumerator GetRequest(string url, Action<string> callback)
+        {
+            Logger.log.Debug("Calling : " + url);
+            UnityWebRequest www = UnityWebRequest.Get(url);
+            www.SetRequestHeader("ApiKey", _apiKey);
+            yield return www.SendWebRequest();
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Logger.log.Debug($"Error getting: {url}");
+                Logger.log.Debug(www.error);
+            }
+            else
+            {
+                string responseString = www.downloadHandler.text;
+                Logger.log.Debug("Response : " + responseString);
+                callback?.Invoke(responseString);
+                
+            }
+        }
+
         IEnumerator PostRequest(string url, string json)
         {
             Logger.log.Debug($"POST: {url}:{json}");
@@ -192,8 +221,14 @@ namespace BeatFollower.Services
             }
         }
 
+        public void Initialize()
+        {
+            _eventService.LevelFinished += SubmitActivity;
+        }
 
+        public void Dispose()
+        {
+            _eventService.LevelFinished -= SubmitActivity;
+        }
     }
-   
-    
 }

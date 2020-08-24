@@ -1,22 +1,35 @@
 ﻿using System;
-using System.Linq;
+using Zenject;
 using System.Reflection;
+using BS_Utils.Utilities;
 using BeatFollower.Services;
 using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.Notify;
+using System.Runtime.CompilerServices;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Components;
-using UnityEngine;
 
 namespace BeatFollower.UI
 {
-    public class EndScreen : NotifiableSingleton<EndScreen>
+    public class EndScreen : INotifiableHost, IInitializable, IDisposable
     {
-        private BeatFollowerService _beatFollowerService;
-        public IBeatmapLevel LastSong { get; set; }
-
-        const string Name = "BeatFollower";
-        private BS_Utils.Utilities.Config _config;
+        private IBeatmapLevel _lastSong;
         private bool recommendInteractable = true;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly Config _config;
+        private readonly EventService _eventService;
+        private readonly BeatFollowerService _beatFollowerService;
+        private readonly ResultsViewController _resultsViewController;
+
+        public EndScreen([Inject(Id = "BeatFollower Config")] Config config, EventService eventService, BeatFollowerService beatFollowerService, ResultsViewController resultsViewController)
+        {
+            _resultsViewController = resultsViewController;
+            _beatFollowerService = beatFollowerService;
+            _eventService = eventService;
+            _config = config;
+            Setup();
+        }
+
         [UIValue("recommendInteractable")]
         public bool RecommendInteractable
         {
@@ -27,54 +40,34 @@ namespace BeatFollower.UI
                 NotifyPropertyChanged();
             }
         }
+
         [UIAction("recommend-pressed")]
-        private void RecommendPressed()
+        protected void RecommendPressed()
         {
             Logger.log.Debug("Recommend Pressed.");
-            if(_beatFollowerService == null)
-                _beatFollowerService = new BeatFollowerService();
-            Logger.log.Debug("Got Service.");
-
-            _beatFollowerService.SubmitRecommendation(LastSong);
+            _beatFollowerService.SubmitRecommendation(_lastSong);
             RecommendInteractable = false;
-
-
         }
 
-        public void Setup()
+        public void EnableRecommmendButton()
+        {
+            RecommendInteractable = true;
+        }
+
+        private void Setup()
         {
             try
             {
-                _config = new BS_Utils.Utilities.Config(Name);
-
-                var position = _config.GetString(Name, "Position", "BottomLeft");
+                var position = _config.GetString("BeatFollower", "Position", "BottomLeft");
                 if (string.IsNullOrEmpty(position))
                     position = "BottomLeft";
 
-                var resultsView = Resources.FindObjectsOfTypeAll<ResultsViewController>().FirstOrDefault();
-                if (!resultsView) return;
+                if (!_resultsViewController) return;
 
                 // Replaces spaces to be more friendly, in case a user types "Bottom Left" rather than "BottomLeft"
-                switch (position.ToLower().Replace(" ", ""))
-                {
-                    case "topleft":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopLeft.bsml"), resultsView.gameObject, this);
-                        break;
-                    case "topright":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopRight.bsml"), resultsView.gameObject, this);
-                        break;
-                    case "bottomright":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomRight.bsml"), resultsView.gameObject, this);
-                        break;
-                    case "bottomleft":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomLeft.bsml"), resultsView.gameObject, this);
-                        break;
-                    default: // opted for duplication for clarity and future proofing
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomLeft.bsml"), resultsView.gameObject, this);
-                        break;
-
-                }
-               
+                var pos = position.ToLower().Replace(" ", "");
+                if (pos != "bottomleft" || pos != "bottomright" || pos != "topleft" || pos != "topright") pos = "bottomleft";
+                BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), $"BeatFollower.UI.EndScreen-{pos}.bsml"), _resultsViewController.gameObject, this);
             }
             catch (Exception ex)
             {
@@ -82,10 +75,29 @@ namespace BeatFollower.UI
             }
         }
 
-
-        public void EnableRecommmendButton()
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            RecommendInteractable = true;
+            try
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+            catch { }
+        }
+
+        public void Initialize()
+        {
+            _eventService.LevelStarted += LevelStarted;
+        }
+
+        public void Dispose()
+        {
+            _eventService.LevelStarted -= LevelStarted;
+        }
+
+        private void LevelStarted(IBeatmapLevel level)
+        {
+            EnableRecommmendButton();
+            _lastSong = level;
         }
     }
 }
