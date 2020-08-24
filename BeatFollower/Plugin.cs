@@ -30,6 +30,7 @@ namespace BeatFollower
             {
                 Installer.RegisterAppInstaller(_bfiStartup);
                 Installer.RegisterMenuInstaller(_bfmiStartup);
+                _bfmiStartup.AddButton();
                 Logger.log.Debug("BeatFollower Enabled");
             }
             catch (Exception ex)
@@ -45,6 +46,7 @@ namespace BeatFollower
             {
                 Installer.UnregisterAppInstaller(_bfiStartup);
                 Installer.UnregisterMenuInstaller(_bfmiStartup);
+                _bfmiStartup.RemoveButton();
                 Logger.log.Debug("BeatFollower Disabled");
             }
             catch (Exception ex)

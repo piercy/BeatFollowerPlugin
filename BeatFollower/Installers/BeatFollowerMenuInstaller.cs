@@ -1,27 +1,19 @@
 ﻿using BeatFollower.UI;
-using BeatSaberMarkupLanguage;
-using BeatSaberMarkupLanguage.MenuButtons;
 using SiraUtil.Zenject;
+using BeatSaberMarkupLanguage;
 
 namespace BeatFollower.Installers
 {
     public class BeatFollowerMenuInstaller : Zenject.Installer
     {
-        private ModFlowCoordinator flowCoordinator;
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<EndScreen>().AsSingle().NonLazy();
-            
-            flowCoordinator = BeatSaberUI.CreateFlowCoordinator<ModFlowCoordinator>();
+            var beatFollowerViewController = BeatSaberUI.CreateViewController<BeatFollowerViewController>();
+            var flowCoordinator = BeatSaberUI.CreateFlowCoordinator<ModFlowCoordinator>();
 
-            MenuButton button = new MenuButton("BeatFollower", "", OnClick);
-            MenuButtons.instance.RegisterButton(button);
-
-
-        }
-        private void OnClick()
-        {
-            BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(flowCoordinator);
+            Container.ForceBindComponent<BeatFollowerViewController>(beatFollowerViewController);
+            Container.ForceBindComponent<ModFlowCoordinator>(flowCoordinator);
         }
     }
 }

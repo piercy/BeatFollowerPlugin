@@ -3,11 +3,10 @@ using Zenject;
 using Newtonsoft.Json;
 using BS_Utils.Utilities;
 using System.Collections;
-using System.Collections.Generic;
 using BeatFollower.Models;
 using BeatFollower.Utilities;
-using IPA.Config.Data;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 namespace BeatFollower.Services
 {

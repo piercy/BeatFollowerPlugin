@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Zenject;
 using BeatFollower.Models;
 using BeatFollower.Services;
-using BeatSaberMarkupLanguage;
+using System.Collections.Generic;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
@@ -26,8 +20,8 @@ namespace BeatFollower.UI
         [UIValue("followers")]
         public List<object> followersUiList = new List<object>();
 
-
-        public BeatFollowerViewController(BeatFollowerService beatFollowerService)
+        [Inject]
+        public void Construct(BeatFollowerService beatFollowerService)
         {
             _beatFollowerService = beatFollowerService;
         }
@@ -38,10 +32,6 @@ namespace BeatFollower.UI
             Logger.log.Debug("IN VC");
             if (firstActivation)
             {
-                Logger.log.Debug("Called BeatFollowerService");
-                if(_beatFollowerService == null)
-                    Logger.log.Debug("BeatFollowerService is null");
-
                 _beatFollowerService.GetFollowing(SetFollowers);
             }
         }

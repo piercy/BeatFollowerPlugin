@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BeatSaberMarkupLanguage;
-using HMUI;
+﻿using HMUI;
 using Zenject;
+using BeatSaberMarkupLanguage;
 
 namespace BeatFollower.UI
 {
     class ModFlowCoordinator : FlowCoordinator
     {
-        [Inject] private BeatFollowerViewController beatFollowerViewController;
+        private BeatFollowerViewController _beatFollowerViewController;
+
+        [Inject]
+        public void Construct(BeatFollowerViewController beatFollowerViewController)
+        {
+            _beatFollowerViewController = beatFollowerViewController;
+        }
 
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
@@ -22,12 +23,12 @@ namespace BeatFollower.UI
             }
             Logger.log.Debug("im in the FC");
             
-            ProvideInitialViewControllers(beatFollowerViewController);
+            ProvideInitialViewControllers(_beatFollowerViewController);
         }
+
         protected override void BackButtonWasPressed(ViewController topViewController)
         {
             BeatSaberUI.MainFlowCoordinator.DismissFlowCoordinator(this);
         }
     }
 }
-    

@@ -16,11 +16,6 @@ namespace BeatFollower.Installers
             Container.BindInterfacesAndSelfTo<EventService>().AsSingle();
             Container.BindInterfacesAndSelfTo<BeatFollowerService>().AsSingle().NonLazy();
             Container.BindInstance(new Config(name)).WithId($"{name} Config").AsSingle();
-
-
-            var beatFollowerViewController = BeatSaberUI.CreateViewController<BeatFollowerViewController>();
-            Container.ForceBindComponent<BeatFollowerViewController>(beatFollowerViewController);
-
             firstInstallHappened = true;
         }
     }
