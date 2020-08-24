@@ -4,16 +4,17 @@
       <horizontal bg='panel-top' pad-left='15' pad-right='15' horizontal-fit='PreferredSize'>
         <text text='Following' align='Center' font-size='8'/>
       </horizontal>
-    <vertical>
+    <vertical bg='round-rect-panel' pref-width='100'>
       <pg-button dir='Up' click-event='follower-list#PageUp'/>
-      <stack>
+      <stack >
         <custom-list visible-cells='5' cell-size='10' id='follower-list' contents='followers'>
-          <stack vertical-fit='Unconstrained'>
+          <stack  vertical-fit='Unconstrained' pad='1'>
             <horizontal child-expand-width='false' vertical-fit='Unconstrained'>
-              <raw-image id='follower-image' pref-width='10'/>
+              <raw-image id='follower-image' pref-width='10' />
               <vertical horizontal-fit='Unconstrained'>
                 <text text='~follower-name' align='MidlineLeft' font-size='4' />
               </vertical>
+              <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.download.png' stroke-type='Clean' pad='2'/>
             </horizontal>
           </stack>
         </custom-list>

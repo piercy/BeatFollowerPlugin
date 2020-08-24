@@ -13,9 +13,15 @@ namespace BeatFollower.Installers
         public override void InstallBindings()
         {
             string name = "BeatFollower";
-            Container.BindInterfacesAndSelfTo<EventService>().AsSingle();
-            Container.BindInterfacesAndSelfTo<BeatFollowerService>().AsSingle().NonLazy();
             Container.BindInstance(new Config(name)).WithId($"{name} Config").AsSingle();
+
+            Container.BindInterfacesAndSelfTo<ConfigService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<EventService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ActivityService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FollowService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PlaylistService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<RequestService>().AsSingle();
+            
             firstInstallHappened = true;
         }
     }

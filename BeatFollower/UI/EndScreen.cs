@@ -18,13 +18,13 @@ namespace BeatFollower.UI
 
         private readonly Config _config;
         private readonly EventService _eventService;
-        private readonly BeatFollowerService _beatFollowerService;
+        private readonly ActivityService _activityService;
         private readonly ResultsViewController _resultsViewController;
 
-        public EndScreen([Inject(Id = "BeatFollower Config")] Config config, EventService eventService, BeatFollowerService beatFollowerService, ResultsViewController resultsViewController)
+        public EndScreen([Inject(Id = "BeatFollower Config")] Config config, EventService eventService, ActivityService activityService, ResultsViewController resultsViewController)
         {
             _resultsViewController = resultsViewController;
-            _beatFollowerService = beatFollowerService;
+            _activityService = activityService;
             _eventService = eventService;
             _config = config;
             Setup();
@@ -45,7 +45,7 @@ namespace BeatFollower.UI
         protected void RecommendPressed()
         {
             Logger.log.Debug("Recommend Pressed.");
-            _beatFollowerService.SubmitRecommendation(_lastSong);
+            _activityService.SubmitRecommendation(_lastSong);
             RecommendInteractable = false;
         }
 

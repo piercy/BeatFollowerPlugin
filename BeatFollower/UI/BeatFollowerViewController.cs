@@ -12,7 +12,6 @@ namespace BeatFollower.UI
     [ViewDefinition("BeatFollower.UI.FollowerList.bsml")]
     public class BeatFollowerViewController : BSMLAutomaticViewController // BSMLResourceViewController
     {
-        private BeatFollowerService _beatFollowerService;
 
         [UIComponent("follower-list")]
         public CustomCellListTableData followerList;
@@ -20,10 +19,12 @@ namespace BeatFollower.UI
         [UIValue("followers")]
         public List<object> followersUiList = new List<object>();
 
+        private FollowService _followService;
+
         [Inject]
-        public void Construct(BeatFollowerService beatFollowerService)
+        public void Construct(FollowService followService)
         {
-            _beatFollowerService = beatFollowerService;
+            _followService = followService;
         }
 
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
@@ -32,7 +33,7 @@ namespace BeatFollower.UI
             Logger.log.Debug("IN VC");
             if (firstActivation)
             {
-                _beatFollowerService.GetFollowing(SetFollowers);
+                _followService.GetFollowing(SetFollowers);
             }
         }
         public void SetFollowers(List<Follower> followers)
