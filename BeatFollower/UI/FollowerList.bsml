@@ -14,12 +14,12 @@
               <vertical horizontal-fit='Unconstrained'>
                 <text text='~follower-name' align='MidlineLeft' font-size='4' />
               </vertical>
-              <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.download.png' stroke-type='Clean' pad='2'/>
             </horizontal>
           </stack>
         </custom-list>
       </stack>
       <pg-button dir='Down' click-event='follower-list#PageDown'/>
     </vertical>
+    <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.download.png' stroke-type='Clean' pad='2' on-click="download-pressed" />
   </vertical>
 </stack>

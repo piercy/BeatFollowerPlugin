@@ -12,12 +12,34 @@ namespace BeatFollower.Services
 
         public string DefaultApiKey => "0000000-0000000-0000000-0000000";
         private string defaultApiUrl = "https://api.beatfollower.com";
+        private string _apiKey;
+        private string _apiUrl;
+        private string _position;
+        private bool _debug;
 
-        public string ApiUrl { get; private set; }
-        public string ApiKey { get; private set; }
-        public string Position { get; private set; }
+        public string ApiUrl
+        {
+            get => _apiUrl;
+            private set => _apiUrl = value;
+        }
 
-        public bool Debug { get; private set; }
+        public string ApiKey
+        {
+            get => _apiKey;
+            private set => _apiKey = value;
+        }
+
+        public string Position
+        {
+            get => _position;
+            private set => _position = value;
+        }
+
+        public bool Debug
+        {
+            get => _debug;
+            private set => _debug = value;
+        }
 
         public ConfigService([Inject(Id = "BeatFollower Config")] Config config)
         {
@@ -25,23 +47,23 @@ namespace BeatFollower.Services
         }
         public void Initialize()
         {
-            Position = _config.GetString(Name, "Position");
-            ApiKey = _config.GetString(Name, "ApiKey");
-            ApiUrl = _config.GetString(Name, "ApiUrl");
-            Debug = _config.GetBool(Name, "Debug");
+            _position = _config.GetString(Name, "Position");
+            _apiKey = _config.GetString(Name, "ApiKey");
+            _apiUrl = _config.GetString(Name, "ApiUrl");
+            _debug = _config.GetBool(Name, "Debug");
 
             Logger.log.Debug($"##### BEATFOLLOWER DEBUG IS SET TO TRUE. YOU SHOULD NOT UPLOAD YOUR LOG FILES ANYWHERE AS SENSITIVE INFORMATION COULD BE LEAKED! #####");
             Logger.log.Debug($"##### BEATFOLLOWER DEBUG IS SET TO TRUE. USE OF DEBUG MODE IS AT YOUR OWN RISK! #####");
 
             // Clearing out the old address automatically for the testers. It will then set the default
-            if (ApiUrl.StartsWith("http://direct.beatfollower.com"))
-                ApiUrl = null;
+            if (_apiUrl.StartsWith("http://direct.beatfollower.com"))
+                _apiUrl = null;
 
             // Set defaults
-            if (string.IsNullOrEmpty(ApiUrl))
+            if (string.IsNullOrEmpty(_apiUrl))
             {
                 _config.SetString(Name, "ApiUrl", defaultApiUrl);
-                ApiUrl = defaultApiUrl;
+                _apiUrl = defaultApiUrl;
             }
 
             if (string.IsNullOrEmpty(Position))
@@ -49,18 +71,18 @@ namespace BeatFollower.Services
                 _config.SetString(Name, "Position", "BottomLeft");
             }
 
-            if (string.IsNullOrEmpty(ApiKey))
+            if (string.IsNullOrEmpty(_apiKey))
             {
                 _config.SetString(Name, "ApiKey", DefaultApiKey);
             }
 
-            if (!ApiUrl.EndsWith("/"))
+            if (!_apiUrl.EndsWith("/"))
             {
-                ApiUrl += "/";
+                _apiUrl += "/";
             }
-            Logger.log.Debug($"ApiUrl: {ApiUrl}");
-            if(Debug)
-                Logger.log.Debug($"ApiKey: {ApiKey}");
+            Logger.log.Debug($"ApiUrl: {_apiUrl}");
+            if(_debug)
+                Logger.log.Debug($"ApiKey: {_apiKey}");
         }
 
 

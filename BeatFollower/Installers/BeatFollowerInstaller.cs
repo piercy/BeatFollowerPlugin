@@ -20,7 +20,7 @@ namespace BeatFollower.Installers
             Container.BindInterfacesAndSelfTo<ActivityService>().AsSingle();
             Container.BindInterfacesAndSelfTo<FollowService>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlaylistService>().AsSingle();
-            Container.BindInterfacesAndSelfTo<RequestService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<RequestService>().AsSingle().NonLazy();
             
             firstInstallHappened = true;
         }

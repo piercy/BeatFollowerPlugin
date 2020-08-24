@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.ComponentModel;
 using BS_Utils.Utilities;
 using UnityEngine.Networking;
+using UnityEngine.UIElements;
 using Zenject;
 
 namespace BeatFollower.Services
@@ -11,19 +13,46 @@ namespace BeatFollower.Services
         
         private ConfigService _configService;
         private string _apiKey;
-
-        public RequestService(ConfigService configService)
-        {
+        private Config _config;
+        private string _position;
+        private string _apiUrl;
+        private bool _debug;
+        const string Name = "BeatFollower";
+        public RequestService([Inject(Id = "BeatFollower Config")] Config config, ConfigService configService)
+        { 
             _configService = configService;
+            _config = config;
+
+            _position = _config.GetString(Name, "Position");
+            _apiKey = _config.GetString(Name, "ApiKey");
+            _apiUrl = _config.GetString(Name, "ApiUrl");
+            _debug = _config.GetBool(Name, "Debug");
+
+            Logger.log.Debug($"##### BEATFOLLOWER DEBUG IS SET TO TRUE. YOU SHOULD NOT UPLOAD YOUR LOG FILES ANYWHERE AS SENSITIVE INFORMATION COULD BE LEAKED! #####");
+            Logger.log.Debug($"##### BEATFOLLOWER DEBUG IS SET TO TRUE. USE OF DEBUG MODE IS AT YOUR OWN RISK! #####");
+
+            // Clearing out the old address automatically for the testers. It will then set the default
+            if (!_apiUrl.EndsWith("/"))
+            {
+                _apiUrl += "/";
+            }
+            Logger.log.Debug($"ApiUrl: {_apiUrl}");
+            if (_debug)
+                Logger.log.Debug($"ApiKey: {_apiKey}");
+
         }
+
         public IEnumerator Get(string path, Action<string> callback)
         {
-            var url = _configService.ApiUrl + path;
+            if(path.StartsWith("feed"))
+                throw new Exception("FUCK YOU");
+
+            Logger.log.Debug($"GETTING");
+            var url = _apiUrl + path;
             Logger.log.Debug($"GET: {url}");
             if (_configService.Debug)
                 Logger.log.Debug($"ApiKey: {_apiKey}");
 
-            _apiKey = _configService.ApiKey;
             if (string.IsNullOrEmpty(_apiKey) || _apiKey == _configService.DefaultApiKey)
             {
                 Logger.log.Debug("API Key is either default or empty");

@@ -17,7 +17,7 @@ namespace BeatFollower.Services
         public void GetFollowing(Action<List<Follower>> callback)
         {
             Logger.log.Debug("Called GetFollowing");
-            SharedCoroutineStarter.instance.StartCoroutine(_requestService.Get("/following", response =>
+            SharedCoroutineStarter.instance.StartCoroutine(_requestService.Get("following", response =>
             {
                 var following = JsonConvert.DeserializeObject<List<Follower>>(response);
                 callback?.Invoke(following);
