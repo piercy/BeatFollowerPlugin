@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using BeatFollower.Installers;
 using BeatFollower.Models;
 using BeatFollower.Services;
 using BeatFollower.UI;
@@ -9,6 +10,7 @@ using IPA;
 using IPA.Config;
 using Newtonsoft.Json;
 using UnityEngine.Networking;
+using Config = BS_Utils.Utilities.Config;
 
 
 namespace BeatFollower
@@ -17,11 +19,12 @@ namespace BeatFollower
     [Plugin(RuntimeOptions.DynamicInit)]
     public class Plugin
     {
+        private EventService _eventService;
+        private Startup _startup;
         internal static Plugin instance { get; private set; }
         internal static string Name => "BeatFollower";
 
-        private BeatFollowerService _beatFollowerService;
-        private EndScreen _endScreen;
+
         [Init]
         public void Init(object nullObject, IPA.Logging.Logger logger)
         {
@@ -32,7 +35,10 @@ namespace BeatFollower
         public void OnApplicationStart()
         {
             Logger.log.Debug("OnApplicationStart");
-         
+            ConfigService.Initialize();
+            _eventService = new EventService();
+            _startup = new Startup();
+            
         }
 
         [OnEnable]
@@ -41,11 +47,8 @@ namespace BeatFollower
             try
             {
                 Logger.log.Debug("BeatFollower Enabled");
-                _beatFollowerService = new BeatFollowerService();
-                _endScreen = new EndScreen();
-                BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh += BSEventsOnearlyMenuSceneLoadedFresh;
-                BS_Utils.Plugin.LevelDidFinishEvent += PluginOnLevelDidFinishEvent;
-                BS_Utils.Utilities.BSEvents.gameSceneLoaded += BSEvents_gameSceneLoaded;
+                _eventService.Initialize();
+                _startup.AddButton();
             }
             catch (Exception ex)
             {
@@ -59,11 +62,9 @@ namespace BeatFollower
             try
             {
                 Logger.log.Debug("BeatFollower Disabled");
-                _beatFollowerService = null;
-                _endScreen = null;
-                BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh -= BSEventsOnearlyMenuSceneLoadedFresh;
-                BS_Utils.Plugin.LevelDidFinishEvent -= PluginOnLevelDidFinishEvent;
-                BS_Utils.Utilities.BSEvents.gameSceneLoaded -= BSEvents_gameSceneLoaded;
+                _eventService.Dispose();
+                _startup.RemoveButton();
+
             }
             catch (Exception ex)
             {
@@ -71,30 +72,6 @@ namespace BeatFollower
             }
         }
 
-        private void BSEventsOnearlyMenuSceneLoadedFresh(ScenesTransitionSetupDataSO obj)
-        {
-            // MOD CHECKING EXAMPLE
-            //#pragma warning disable CS0618 // remove PluginManager.Plugins is obsolete warning
-            //SongBrowserTweaks.ModLoaded = IPAPluginManager.GetPluginFromId("SongBrowser") != null || IPAPluginManager.GetPlugin("Song Browser") != null || IPAPluginManager.Plugins.Any(x => x.Name == "Song Browser");
-            //SongDataCoreTweaks.ModLoaded = IPAPluginManager.GetPluginFromId("SongDataCore") != null;
-            //SongDataCoreTweaks.ModVersion = IPAPluginManager.GetPluginFromId("SongDataCore")?.Version;
-            //BeatSaverVotingTweaks.ModLoaded = IPAPluginManager.GetPluginFromId("BeatSaverVoting") != null;
-            //#pragma warning restore CS0618
-
-            Logger.log.Debug("Start Setup");
-            _endScreen.Setup();
-        }
-
-        private void BSEvents_gameSceneLoaded()
-        {
-            _endScreen.EnableRecommmendButton();
-            _endScreen.LastSong = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level;
-        }
-
-        private void PluginOnLevelDidFinishEvent(StandardLevelScenesTransitionSetupDataSO levelscenestransitionsetupdataso, LevelCompletionResults levelcompletionresults)
-        {
-            _beatFollowerService.SubmitActivity(levelcompletionresults);
-        }
 
         [OnExit]
         public void OnApplicationQuit()

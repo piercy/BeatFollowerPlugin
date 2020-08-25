@@ -1,61 +1,21 @@
 ﻿using System;
+using Newtonsoft.Json;
+using BS_Utils.Utilities;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BeatFollower.Models;
 using BeatFollower.Utilities;
-using Newtonsoft.Json;
 using UnityEngine.Networking;
 
 namespace BeatFollower.Services
 {
-    class BeatFollowerService
+    public class ActivityService
     {
-        const string Name = "BeatFollower";
-        private string defaultApiKey = "0000000-0000000-0000000-0000000";
-        private string defaultApiUrl = "https://api.beatfollower.com";
-        private string _apiUrl;
-        private string _apiKey;
-        private string _position;
-        private BS_Utils.Utilities.Config _config;
-        public BeatFollowerService()
+        private RequestService _requestService;
+
+
+        public ActivityService()
         {
-
-            _config = new BS_Utils.Utilities.Config(Name);
-             _position = _config.GetString(Name, "Position");
-            _apiKey = _config.GetString(Name, "ApiKey");
-            _apiUrl = _config.GetString(Name, "ApiUrl");
-
-            // Clearing out the old address automatically for the testers. It will then set the default
-            if (_apiUrl.StartsWith("http://direct.beatfollower.com"))
-                _apiUrl = null;
-
-            // Set defaults
-            if (string.IsNullOrEmpty(_apiUrl))
-            {
-                _config.SetString(Name, "ApiUrl", defaultApiUrl);
-                _apiUrl = defaultApiUrl;
-            }
-
-            if(string.IsNullOrEmpty(_position))
-            {
-                _config.SetString(Name, "Position", "BottomLeft");
-            }
-
-
-            if (string.IsNullOrEmpty(_apiKey))
-            {
-                _config.SetString(Name, "ApiKey", defaultApiKey);
-            }
-
-            if (!_apiUrl.EndsWith("/"))
-            {
-                _apiUrl += "/";
-            }
-            Logger.log.Debug($"ApiKey: {_apiKey}");
-            Logger.log.Debug($"ApiUrl: {_apiUrl}");
+            _requestService = new RequestService();
         }
 
         public void SubmitActivity(LevelCompletionResults levelCompletionResults)
@@ -123,7 +83,7 @@ namespace BeatFollower.Services
 
                 string json = JsonConvert.SerializeObject(activity);
 
-                SharedCoroutineStarter.instance.StartCoroutine(PostRequest(_apiUrl + "activity/", json));
+                SharedCoroutineStarter.instance.StartCoroutine(_requestService.Post("activity/", json));
             }
             catch (Exception ex)
             {
@@ -151,49 +111,12 @@ namespace BeatFollower.Services
 
                 string json = JsonConvert.SerializeObject(recommendation);
 
-                SharedCoroutineStarter.instance.StartCoroutine(PostRequest(_apiUrl + "recommendation/", json));
+                SharedCoroutineStarter.instance.StartCoroutine(_requestService.Post("recommendation/", json));
             }
             catch (Exception ex)
             {
                 Logger.log.Error(ex);
             }
         }
-
-        IEnumerator PostRequest(string url, string json)
-        {
-            Logger.log.Debug($"POST: {url}:{json}");
-
-            _apiKey = _config.GetString(Name, "ApiKey");
-            if (string.IsNullOrEmpty(_apiKey) || _apiKey == defaultApiKey)
-            {
-                Logger.log.Debug("API Key is either default or empty");
-            }
-            else
-            {
-
-                var uwr = new UnityWebRequest(url, "POST");
-                uwr.SetRequestHeader("ApiKey", _apiKey);
-                byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
-                uwr.uploadHandler = (UploadHandler) new UploadHandlerRaw(jsonToSend);
-                uwr.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
-                uwr.SetRequestHeader("Content-Type", "application/json");
-
-                //Send the request then wait here until it returns
-                yield return uwr.SendWebRequest();
-
-                if (uwr.isNetworkError || uwr.isHttpError)
-                {
-                    Logger.log.Debug("Error While Sending: " + uwr.error);
-                }
-                else
-                {
-                    Logger.log.Debug("Received: " + uwr.downloadHandler.text);
-                }
-            }
-        }
-
-
     }
-   
-    
 }

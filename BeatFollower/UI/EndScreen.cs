@@ -11,7 +11,7 @@ namespace BeatFollower.UI
 {
     public class EndScreen : NotifiableSingleton<EndScreen>
     {
-        private BeatFollowerService _beatFollowerService;
+        private ActivityService _activityService;
         public IBeatmapLevel LastSong { get; set; }
 
         const string Name = "BeatFollower";
@@ -31,11 +31,12 @@ namespace BeatFollower.UI
         private void RecommendPressed()
         {
             Logger.log.Debug("Recommend Pressed.");
-            if(_beatFollowerService == null)
-                _beatFollowerService = new BeatFollowerService();
+            if(_activityService == null)
+                _activityService = new ActivityService();
+
             Logger.log.Debug("Got Service.");
 
-            _beatFollowerService.SubmitRecommendation(LastSong);
+            _activityService.SubmitRecommendation(LastSong);
             RecommendInteractable = false;
 
 

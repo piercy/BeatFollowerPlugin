@@ -58,6 +58,11 @@
       <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="PlaylistLoaderLite, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Plugins\PlaylistLoaderLite.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="SongCore, Version=2.9.1.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberDir)\Plugins\SongCore.dll</HintPath>
@@ -119,20 +124,36 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="UnityEngine.VRModule">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.VRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Installers\Startup.cs" />
+    <Compile Include="Models\Follower.cs" />
+    <Compile Include="Models\FollowerUiObject.cs" />
     <Compile Include="Models\Recommendation.cs" />
-    <Compile Include="Services\BeatFollowerService.cs" />
+    <Compile Include="Services\ActivityService.cs" />
+    <Compile Include="Services\ConfigService.cs" />
+    <Compile Include="Services\EventService.cs" />
+    <Compile Include="Services\FollowService.cs" />
+    <Compile Include="Services\PlaylistService.cs" />
+    <Compile Include="Services\RequestService.cs" />
+    <Compile Include="UI\BeatFollowerViewController.cs" />
     <Compile Include="UI\EndScreen.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\ModFlowCoordinator.cs" />
     <Compile Include="Utilities\ExtensionMethods.cs" />
+    <Compile Include="Utilities\LoadScripts.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
@@ -143,8 +164,11 @@
     <EmbeddedResource Include="UI\EndScreen-BottomLeft.bsml" />
     <EmbeddedResource Include="UI\EndScreen-BottomRight.bsml" />
     <EmbeddedResource Include="UI\EndScreen-TopRight.bsml" />
+    <EmbeddedResource Include="UI\FollowerList.bsml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\download.png" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Share.png" />
   </ItemGroup>
