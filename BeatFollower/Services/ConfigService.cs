@@ -19,6 +19,9 @@ namespace BeatFollower.Services
         public static string Position { get; private set; }
 
         public static bool Debug { get; private set; }
+        public static string ApiUrlDebug { get; set; }
+
+        public static string ApiKeyDebug { get; set; }
 
         public static void Initialize()
         {
@@ -27,8 +30,14 @@ namespace BeatFollower.Services
 
             Position = _config.GetString(Name, "Position");
             ApiKey = _config.GetString(Name, "ApiKey");
-            ApiUrl = _config.GetString(Name, "ApiUrl");
+            ApiUrl = _config.GetString(Name, "ApiUrl"); 
+
+            ApiKeyDebug = _config.GetString(Name, "ApiKeyDebug");
+            ApiUrlDebug = _config.GetString(Name, "ApiUrlDebug");
+
             Debug = _config.GetBool(Name, "Debug");
+
+
 
             Logger.log.Debug($"##### BEATFOLLOWER DEBUG IS SET TO TRUE. YOU SHOULD NOT UPLOAD YOUR LOG FILES ANYWHERE AS SENSITIVE INFORMATION COULD BE LEAKED! #####");
             Logger.log.Debug($"##### BEATFOLLOWER DEBUG IS SET TO TRUE. USE OF DEBUG MODE IS AT YOUR OWN RISK! #####");
@@ -54,13 +63,26 @@ namespace BeatFollower.Services
                 _config.SetString(Name, "ApiKey", DefaultApiKey);
             }
 
+            if (Debug)
+            {
+                ApiKey = ApiKeyDebug;
+                ApiUrl = ApiUrlDebug;
+            }
+
+
+
             if (!ApiUrl.EndsWith("/"))
             {
                 ApiUrl += "/";
             }
+
+           
             Logger.log.Debug($"ApiUrl: {ApiUrl}");
+
             if(Debug)
                 Logger.log.Debug($"ApiKey: {ApiKey}");
         }
+
+        
     }
 }
