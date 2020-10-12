@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using BeatFollower.Services;
 using BeatFollower.Utilities;
+using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,26 +14,17 @@ namespace BeatFollower.Models
         public FollowerUiObject(string name, string imageUrl)
         {
             this.name = name;
-            SetImage(imageUrl);
+            this.profileImageUrl = imageUrl;
             _playlistService = new PlaylistService();
             
         }
 
-        public void SetImage(string url)
-        {
-            SharedCoroutineStarter.instance.StartCoroutine(LoadScripts.LoadSpriteCoroutine(url, (profileImage) =>
-            {
-                image.texture = profileImage;
-                image.color = Color.white;
-            }));
 
-        }
         [UIValue("follower-name")]
         string name;
 
-
-        [UIComponent("follower-image")]
-        private RawImage image;
+        [UIValue("follower-profile-image")]
+        string profileImageUrl;
 
         private PlaylistService _playlistService;
 

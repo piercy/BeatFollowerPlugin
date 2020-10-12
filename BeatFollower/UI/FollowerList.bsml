@@ -10,7 +10,7 @@
         <custom-list visible-cells='5' cell-size='10' id='follower-list' contents='followers'>
           <stack  vertical-fit='Unconstrained' pad='1'>
             <horizontal child-expand-width='false' vertical-fit='Unconstrained'>
-              <raw-image id='follower-image' pref-width='10' />
+              <image id='follower-image' pref-width='10' src='~follower-profile-image' />
               <vertical horizontal-fit='Unconstrained'>
                 <text text='~follower-name' align='MidlineLeft' font-size='4' />
               </vertical>
@@ -21,6 +21,5 @@
       </stack>
       <pg-button dir='Down' click-event='follower-list#PageDown'/>
     </vertical>
-    <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.download.png' stroke-type='Clean' pad='2' on-click="download-pressed" />
   </vertical>
 </stack>  

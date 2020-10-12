@@ -153,7 +153,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\ModFlowCoordinator.cs" />
     <Compile Include="Utilities\ExtensionMethods.cs" />
-    <Compile Include="Utilities\LoadScripts.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
