@@ -5,11 +5,11 @@ using BeatSaberMarkupLanguage.ViewControllers;
 
 namespace BeatFollower.Models
 {
-    public class FollowerUiObject : BSMLAutomaticViewController
+    public class FollowerListObject : BSMLAutomaticViewController
     {
         private PlaylistService _playlistService;
 
-        public FollowerUiObject(string name, string imageUrl)
+        public FollowerListObject(string name, string imageUrl)
         {
             this.name = name;
             this.profileImageUrl = imageUrl;
@@ -23,17 +23,26 @@ namespace BeatFollower.Models
         [UIValue("follower-profile-image")]
         string profileImageUrl;
 
+      
+        private bool downloadInteractable = true;
+
         [UIValue("download-interactable")]
-        bool downloadInteractable = true;
+        public bool DownloadInteractable
+        {
+            get => downloadInteractable;
+            set {
+                downloadInteractable = value;
+                NotifyPropertyChanged(); 
+            }
+        }
 
         [UIAction("follow-download-pressed")]
         protected void FollowDownloadPressed()
         {
-            Logger.log.Debug("Download Pressed.");
+            Logger.log.Debug("Download Pressed.1");
 
-            downloadInteractable = false;
-            NotifyPropertyChanged(nameof(downloadInteractable));
-            //  _playlistService.DownloadPlaylist(this.name);
+            DownloadInteractable = false;
+            _playlistService.DownloadPlaylist(this.name);
         }
 
         

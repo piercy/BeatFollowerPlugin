@@ -11,7 +11,7 @@ namespace BeatFollower.UI
 {
     [HotReload(@"C:\working\BeatFollowerPlugin\BeatFollower\UI\FollowerList.bsml")]
     [ViewDefinition("BeatFollower.UI.FollowerList.bsml")]
-    public class BeatFollowerViewController : BSMLAutomaticViewController
+    public class FollowerListViewController : BSMLAutomaticViewController
     {
 
         [UIAction("download-pressed")]
@@ -49,6 +49,7 @@ namespace BeatFollower.UI
             }
             
         }
+
         public void SetFollowers(List<Follower> followers)
         {
             Logger.log.Debug("Called SetFollowers");
@@ -58,7 +59,7 @@ namespace BeatFollower.UI
             {
                 foreach (var follower in followers)
                 {
-                    followersUiList.Add(new FollowerUiObject(follower.Twitch, follower.ProfileImageUrl))
+                    followersUiList.Add(new FollowerListObject(follower.Twitch, follower.ProfileImageUrl));
                 }
             }
             

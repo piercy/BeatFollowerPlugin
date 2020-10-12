@@ -10,7 +10,7 @@ namespace BeatFollower.Installers
 
         public void Install()
         {
-            var beatFollowerViewController = BeatSaberUI.CreateViewController<BeatFollowerViewController>();
+            var beatFollowerViewController = BeatSaberUI.CreateViewController<FollowerListViewController>();
         
         }
 

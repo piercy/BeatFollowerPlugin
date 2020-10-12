@@ -137,7 +137,7 @@
   <ItemGroup>
     <Compile Include="Installers\Startup.cs" />
     <Compile Include="Models\Follower.cs" />
-    <Compile Include="Models\FollowerUiObject.cs" />
+    <Compile Include="UI\FollowerListObject.cs" />
     <Compile Include="Models\Recommendation.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\ConfigService.cs" />
@@ -145,7 +145,7 @@
     <Compile Include="Services\FollowService.cs" />
     <Compile Include="Services\PlaylistService.cs" />
     <Compile Include="Services\RequestService.cs" />
-    <Compile Include="UI\BeatFollowerViewController.cs" />
+    <Compile Include="UI\FollowerListViewController.cs" />
     <Compile Include="UI\EndScreen.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Plugin.cs" />
