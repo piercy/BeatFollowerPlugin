@@ -11,10 +11,14 @@
           <stack  vertical-fit='Unconstrained' pad='1'>
             <horizontal child-expand-width='false' vertical-fit='Unconstrained' pad-left='1' pad-right='1'>
               <image id='follower-image' pref-width='10' src='~follower-profile-image' />
-              <vertical horizontal-fit='Unconstrained' pad-left='2' >
-                <text text='~follower-name' align='MidlineLeft' font-size='4' />
+              <vertical horizontal-fit='Unconstrained' pad-left='2' pad-right='2' >
+                <horizontal>
+                  <text text='~follower-name' align='MidlineLeft' font-size='4' />
+                  <text text='~recommended-count' align='MidlineRight' font-size='4' />
+                </horizontal>
               </vertical>
-              <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.download.png' stroke-type='Clean' pad='2' on-click="follow-download-pressed" interactable="~download-interactable"/>
+              <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.download.png' stroke-type='Clean' pad='2' on-click="follow-download-pressed" interactable="~download-interactable" active="~show-download"/>
+              <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.sync.png' stroke-type='Clean' pad='2' on-click="follow-download-pressed" interactable="~download-interactable" active="~show-update"/>
             </horizontal>
           </stack>
         </custom-list>

@@ -137,6 +137,7 @@
   <ItemGroup>
     <Compile Include="Installers\Startup.cs" />
     <Compile Include="Models\Follower.cs" />
+    <Compile Include="Models\Playlist.cs" />
     <Compile Include="UI\FollowerListObject.cs" />
     <Compile Include="Models\Recommendation.cs" />
     <Compile Include="Services\ActivityService.cs" />
@@ -170,6 +171,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Share.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\sync.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="BuildTargets.targets" />

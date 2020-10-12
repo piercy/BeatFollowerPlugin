@@ -2,6 +2,7 @@
 using BeatFollower.Models;
 using BeatFollower.Services;
 using System.Collections.Generic;
+using System.Linq;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
@@ -57,9 +58,10 @@ namespace BeatFollower.UI
 
             if (followers != null)
             {
-                foreach (var follower in followers)
+                // Sort the follow list to show the installed playlists first
+                foreach (var follower in followers.OrderByDescending(x => x.RecommendedPlaylistInstalled).ThenBy(x => x.Twitch).ToList())
                 {
-                    followersUiList.Add(new FollowerListObject(follower.Twitch, follower.ProfileImageUrl));
+                    followersUiList.Add(new FollowerListObject(follower));
                 }
             }
             
