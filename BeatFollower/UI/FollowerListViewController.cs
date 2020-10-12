@@ -1,4 +1,5 @@
 ﻿
+using System;
 using BeatFollower.Models;
 using BeatFollower.Services;
 using System.Collections.Generic;
@@ -15,13 +16,6 @@ namespace BeatFollower.UI
     public class FollowerListViewController : BSMLAutomaticViewController
     {
 
-        [UIAction("download-pressed")]
-        protected void DownloadPressed()
-        {
-            Logger.log.Debug("Download Pressed.");
-            _playlistService.DownloadPlaylist("piercyttv");
-        }
-
         [UIComponent("follower-list")]
         public CustomCellListTableData followerList;
 
@@ -35,7 +29,7 @@ namespace BeatFollower.UI
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
             base.DidActivate(firstActivation, activationType);
-            Logger.log.Debug("IN VC");
+
             if (firstActivation)
             {
                 if (_followService == null)
@@ -53,18 +47,24 @@ namespace BeatFollower.UI
 
         public void SetFollowers(List<Follower> followers)
         {
-            Logger.log.Debug("Called SetFollowers");
             followersUiList.Clear();
-
-            if (followers != null)
+            try
             {
-                // Sort the follow list to show the installed playlists first
-                foreach (var follower in followers.OrderByDescending(x => x.RecommendedPlaylistInstalled).ThenBy(x => x.Twitch).ToList())
+                if (followers != null)
                 {
-                    followersUiList.Add(new FollowerListObject(follower));
+                    // Sort the follow list to show the installed playlists first
+                    foreach (var follower in followers.OrderByDescending(x => x.RecommendedPlaylistInstalled)
+                        .ThenBy(x => x.Twitch).ToList())
+                    {
+                        followersUiList.Add(new FollowerListObject(follower));
+                    }
                 }
             }
-            
+            catch (Exception e)
+            {
+                Logger.log.Error(e);
+            }
+
             followerList.tableView.ReloadData();
         }
     }

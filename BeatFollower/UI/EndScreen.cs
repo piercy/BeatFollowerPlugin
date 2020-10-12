@@ -34,8 +34,6 @@ namespace BeatFollower.UI
             if(_activityService == null)
                 _activityService = new ActivityService();
 
-            Logger.log.Debug("Got Service.");
-
             _activityService.SubmitRecommendation(LastSong);
             RecommendInteractable = false;
 

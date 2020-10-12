@@ -18,6 +18,7 @@ namespace BeatFollower.Services
         {
             var url = ConfigService.ApiUrl + path;
             Logger.log.Debug($"GET: {url}");
+
             if (ConfigService.Debug)
                 Logger.log.Debug($"ApiKey: {ConfigService.ApiKey}");
 

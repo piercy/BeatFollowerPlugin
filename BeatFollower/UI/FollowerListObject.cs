@@ -74,7 +74,7 @@ namespace BeatFollower.Models
         [UIAction("follow-download-pressed")]
         protected void FollowDownloadPressed()
         {
-            Logger.log.Debug("Download Pressed.1");
+            Logger.log.Debug("Download/Update Pressed.");
 
             DownloadInteractable = false;
             ShowUpdateButton = true;

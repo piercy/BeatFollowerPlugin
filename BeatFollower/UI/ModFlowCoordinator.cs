@@ -18,7 +18,6 @@ namespace BeatFollower.UI
                 title = "BeatFollower";
                 showBackButton = true;
             }
-            Logger.log.Debug("im in the FC");
 
             _followerListViewController = BeatSaberUI.CreateViewController<FollowerListViewController>();
             this.ProvideInitialViewControllers(_followerListViewController);
