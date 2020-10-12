@@ -5,15 +5,13 @@ using System.Reflection;
 using BeatFollower.Models;
 using BS_Utils.Utilities;
 using Newtonsoft.Json;
-using PlaylistLoaderLite.UI;
-using UnityEngine;
 
 namespace BeatFollower.Services
 {
     public class PlaylistService
     {
         private RequestService _requestService;
-        private string playlistFolderPath => $@"{Application.dataPath}\..\Playlists\";
+        private string playlistFolderPath => $@"{IPA.Utilities.UnityGame.InstallPath}\Playlists\";
 
         public PlaylistService()
         {
