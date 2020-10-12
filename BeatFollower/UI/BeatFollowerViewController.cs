@@ -44,6 +44,8 @@ namespace BeatFollower.UI
                     _playlistService = new PlaylistService();
                 
                 _followService.GetFollowing(SetFollowers);
+
+
             }
             
         }
@@ -56,12 +58,11 @@ namespace BeatFollower.UI
             {
                 foreach (var follower in followers)
                 {
-                    followersUiList.Add(new FollowerUiObject(follower.Twitch, follower.ProfileImageUrl ));
+                    followersUiList.Add(new FollowerUiObject(follower.Twitch, follower.ProfileImageUrl))
                 }
             }
             
             followerList.tableView.ReloadData();
-
         }
     }
 }

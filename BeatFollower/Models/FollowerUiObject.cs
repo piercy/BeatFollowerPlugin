@@ -1,16 +1,14 @@
-﻿using System.Runtime.CompilerServices;
-using BeatFollower.Services;
-using BeatFollower.Utilities;
-using BeatSaberMarkupLanguage;
+﻿using BeatFollower.Services;
 using BeatSaberMarkupLanguage.Attributes;
-using UnityEngine;
-using UnityEngine.UI;
-using Image = UnityEngine.UI.Image;
+using BeatSaberMarkupLanguage.Components;
+using BeatSaberMarkupLanguage.ViewControllers;
 
 namespace BeatFollower.Models
 {
-    public class FollowerUiObject
+    public class FollowerUiObject : BSMLAutomaticViewController
     {
+        private PlaylistService _playlistService;
+
         public FollowerUiObject(string name, string imageUrl)
         {
             this.name = name;
@@ -19,21 +17,26 @@ namespace BeatFollower.Models
             
         }
 
-
         [UIValue("follower-name")]
         string name;
 
         [UIValue("follower-profile-image")]
         string profileImageUrl;
 
-        private PlaylistService _playlistService;
+        [UIValue("download-interactable")]
+        bool downloadInteractable = true;
 
         [UIAction("follow-download-pressed")]
         protected void FollowDownloadPressed()
         {
             Logger.log.Debug("Download Pressed.");
-            _playlistService.DownloadPlaylist(this.name);
+
+            downloadInteractable = false;
+            NotifyPropertyChanged(nameof(downloadInteractable));
+            //  _playlistService.DownloadPlaylist(this.name);
         }
+
+        
 
     }
 }
