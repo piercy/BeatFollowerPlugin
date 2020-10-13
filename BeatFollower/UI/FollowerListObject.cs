@@ -60,6 +60,18 @@ namespace BeatFollower.Models
             }
         }
 
+        private bool showTickButton = false;
+        [UIValue("show-tick")]
+        public bool ShowTickButton
+        {
+            get => showTickButton;
+            set
+            {
+                showTickButton = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private bool downloadInteractable = true;
         [UIValue("download-interactable")]
         public bool DownloadInteractable
@@ -77,8 +89,9 @@ namespace BeatFollower.Models
             Logger.log.Debug("Download/Update Pressed.");
 
             DownloadInteractable = false;
-            ShowUpdateButton = true;
+            ShowUpdateButton = false;
             ShowDownloadButton = false;
+            ShowTickButton = true;
             _playlistService.DownloadPlaylist(this.name);
         }
 

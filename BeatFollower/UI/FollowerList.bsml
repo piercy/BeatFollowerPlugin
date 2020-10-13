@@ -18,6 +18,7 @@
                 </horizontal>
               </vertical>
               <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.download.png' stroke-type='Clean' pad='2' on-click="follow-download-pressed" interactable="~download-interactable" active="~show-download" hover-hint='Download Recommended Playlist' />
+              <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.check.png' stroke-type='Clean' pad='2' on-click="follow-download-pressed" interactable="~download-interactable" active="~show-tick" hover-hint='Playlist Updated' />
               <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.sync.png' stroke-type='Clean' pad='2' on-click="follow-download-pressed" interactable="~download-interactable" active="~show-update" hover-hint='Update Recommended Playlist'/>
             </horizontal>
           </stack>
@@ -26,4 +27,4 @@
       <pg-button dir='Down' click-event='follower-list#PageDown'/>
     </vertical>
   </vertical>
-</stack>  
+</stack>
