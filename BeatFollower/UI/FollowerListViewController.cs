@@ -24,11 +24,11 @@ namespace BeatFollower.UI
 
         private FollowService _followService;
         private PlaylistService _playlistService;
-        
 
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, activationType);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
             if (firstActivation)
             {

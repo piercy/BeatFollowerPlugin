@@ -2,8 +2,10 @@
 using Newtonsoft.Json;
 using BS_Utils.Utilities;
 using System.Collections;
+using System.Linq;
 using BeatFollower.Models;
 using BeatFollower.Utilities;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace BeatFollower.Services
@@ -32,11 +34,13 @@ namespace BeatFollower.Services
                     return;
                 }
 
-                // Calculations for acc
-                var modifiedScore = levelCompletionResults.gameplayModifiersModel.GetModifiedScoreForGameplayModifiers(levelCompletionResults.rawScore, levelCompletionResults.gameplayModifiers);
-                var maxScore = ScoreModel.MaxRawScoreForNumberOfNotes(currentMap.difficultyBeatmap.beatmapData.notesCount);
-                var multiplier = levelCompletionResults.gameplayModifiersModel.GetTotalMultiplier(levelCompletionResults.gameplayModifiers);
-                var acc = modifiedScore / (maxScore * multiplier);
+                var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
+                if(scoreController == null)
+                    Logger.log.Debug("SC NULL");
+
+                var modifiedScore = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(levelCompletionResults.rawScore, scoreController.gameplayModifiersScoreMultiplier);
+                var maxScore = scoreController.immediateMaxPossibleRawScore;
+                var acc = modifiedScore / (maxScore * scoreController.gameplayModifiersScoreMultiplier);
                 var normalizedAcc = (acc * 100.0f);
 
 

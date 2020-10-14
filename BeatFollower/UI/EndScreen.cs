@@ -50,29 +50,29 @@ namespace BeatFollower.UI
                 if (string.IsNullOrEmpty(position))
                     position = "BottomLeft";
 
-                var resultsView = Resources.FindObjectsOfTypeAll<ResultsViewController>().FirstOrDefault();
-                if (!resultsView) return;
+                //var resultsView = Resources.FindObjectsOfTypeAll<ResultsViewController>().FirstOrDefault();
+                //if (!resultsView) return;
 
-                // Replaces spaces to be more friendly, in case a user types "Bottom Left" rather than "BottomLeft"
-                switch (position.ToLower().Replace(" ", ""))
-                {
-                    case "topleft":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopLeft.bsml"), resultsView.gameObject, this);
-                        break;
-                    case "topright":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopRight.bsml"), resultsView.gameObject, this);
-                        break;
-                    case "bottomright":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomRight.bsml"), resultsView.gameObject, this);
-                        break;
-                    case "bottomleft":
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomLeft.bsml"), resultsView.gameObject, this);
-                        break;
-                    default: // opted for duplication for clarity and future proofing
-                        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomLeft.bsml"), resultsView.gameObject, this);
-                        break;
+                //// Replaces spaces to be more friendly, in case a user types "Bottom Left" rather than "BottomLeft"
+                //switch (position.ToLower().Replace(" ", ""))
+                //{
+                //    case "topleft":
+                //        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopLeft.bsml"), resultsView.gameObject, this);
+                //        break;
+                //    case "topright":
+                //        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-TopRight.bsml"), resultsView.gameObject, this);
+                //        break;
+                //    case "bottomright":
+                //        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomRight.bsml"), resultsView.gameObject, this);
+                //        break;
+                //    case "bottomleft":
+                //        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomLeft.bsml"), resultsView.gameObject, this);
+                //        break;
+                //    default: // opted for duplication for clarity and future proofing
+                //        BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "BeatFollower.UI.EndScreen-BottomLeft.bsml"), resultsView.gameObject, this);
+                //        break;
 
-                }
+                //}
                
             }
             catch (Exception ex)
