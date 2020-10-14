@@ -170,10 +170,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildTargets.targets" />
-    <EmbeddedResource Include="UI\EndScreen-TopLeft.bsml" />
-    <EmbeddedResource Include="UI\EndScreen-BottomLeft.bsml" />
-    <EmbeddedResource Include="UI\EndScreen-BottomRight.bsml" />
-    <EmbeddedResource Include="UI\EndScreen-TopRight.bsml" />
+    <EmbeddedResource Include="UI\EndScreen-topleft.bsml" />
+    <EmbeddedResource Include="UI\EndScreen-bottomleft.bsml" />
+    <EmbeddedResource Include="UI\EndScreen-bottomright.bsml" />
+    <EmbeddedResource Include="UI\EndScreen-topright.bsml" />
     <EmbeddedResource Include="UI\FollowerList.bsml" />
   </ItemGroup>
   <ItemGroup>
