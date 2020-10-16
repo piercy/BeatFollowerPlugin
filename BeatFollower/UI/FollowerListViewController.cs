@@ -1,7 +1,9 @@
 ﻿
+using System;
 using BeatFollower.Models;
 using BeatFollower.Services;
 using System.Collections.Generic;
+using System.Linq;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
@@ -11,15 +13,8 @@ namespace BeatFollower.UI
 {
     [HotReload(@"C:\working\BeatFollowerPlugin\BeatFollower\UI\FollowerList.bsml")]
     [ViewDefinition("BeatFollower.UI.FollowerList.bsml")]
-    public class BeatFollowerViewController : BSMLAutomaticViewController
+    public class FollowerListViewController : BSMLAutomaticViewController
     {
-
-        [UIAction("download-pressed")]
-        protected void DownloadPressed()
-        {
-            Logger.log.Debug("Download Pressed.");
-            _playlistService.DownloadPlaylist("piercyttv");
-        }
 
         [UIComponent("follower-list")]
         public CustomCellListTableData followerList;
@@ -29,12 +24,12 @@ namespace BeatFollower.UI
 
         private FollowService _followService;
         private PlaylistService _playlistService;
-        
 
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, activationType);
-            Logger.log.Debug("IN VC");
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
+
             if (firstActivation)
             {
                 if (_followService == null)
@@ -44,24 +39,33 @@ namespace BeatFollower.UI
                     _playlistService = new PlaylistService();
                 
                 _followService.GetFollowing(SetFollowers);
+
+
             }
             
         }
+
         public void SetFollowers(List<Follower> followers)
         {
-            Logger.log.Debug("Called SetFollowers");
             followersUiList.Clear();
-
-            if (followers != null)
+            try
             {
-                foreach (var follower in followers)
+                if (followers != null)
                 {
-                    followersUiList.Add(new FollowerUiObject(follower.Twitch, follower.ProfileImageUrl ));
+                    // Sort the follow list to show the installed playlists first
+                    foreach (var follower in followers.OrderByDescending(x => x.RecommendedPlaylistInstalled)
+                        .ThenBy(x => x.Twitch).ToList())
+                    {
+                        followersUiList.Add(new FollowerListObject(follower));
+                    }
                 }
             }
-            
-            followerList.tableView.ReloadData();
+            catch (Exception e)
+            {
+                Logger.log.Error(e);
+            }
 
+            followerList.tableView.ReloadData();
         }
     }
 }

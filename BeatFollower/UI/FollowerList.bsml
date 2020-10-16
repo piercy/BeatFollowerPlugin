@@ -1,26 +1,31 @@
-﻿<stack vertical-fit='Unconstrained'>
+﻿<stack vertical-fit='Unconstrained' >
   <vertical vertical-fit='Unconstrained'>
 
       <horizontal bg='panel-top' pad-left='15' pad-right='15' horizontal-fit='PreferredSize'>
         <text text='Following' align='Center' font-size='8'/>
       </horizontal>
-    <vertical bg='round-rect-panel' pref-width='100'>
+    <vertical pref-width='100'>
       <pg-button dir='Up' click-event='follower-list#PageUp'/>
-      <stack >
-        <custom-list visible-cells='5' cell-size='10' id='follower-list' contents='followers'>
-          <stack  vertical-fit='Unconstrained' pad='1'>
-            <horizontal child-expand-width='false' vertical-fit='Unconstrained'>
-              <raw-image id='follower-image' pref-width='10' />
-              <vertical horizontal-fit='Unconstrained'>
-                <text text='~follower-name' align='MidlineLeft' font-size='4' />
+     
+        <custom-list visible-cells='5' cell-size='10' id='follower-list' contents='followers' >
+          <stack bg='round-rect-panel' vertical-fit='Unconstrained' pad='1'>
+            <horizontal child-expand-width='false' vertical-fit='Unconstrained' pad-left='1' pad-right='1'>
+              <image id='follower-image' pref-width='10' src='~follower-profile-image' />
+              <vertical horizontal-fit='Unconstrained' pad-left='2' pad-right='2' >
+                <horizontal>
+                  <text text='~follower-name' align='MidlineLeft' font-size='4' />
+                  <text text='~recommended-count' align='MidlineRight' font-size='4' hover-hint='Shows how many songs in the playlist'/>
+                </horizontal>
               </vertical>
-              <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.download.png' stroke-type='Clean' pad='2' on-click="follow-download-pressed" />
+              
+                <icon-button min-width='10' max-width='10' pref-width='10' pref-height='10' icon='BeatFollower.Assets.download.png' stroke-type='Clean' pad='1' on-click="follow-download-pressed" interactable="~download-interactable" active="~show-download" hover-hint='Download Recommended Playlist' />
+                <icon-button min-width='10' max-width='10' pref-width='10' pref-height='10' icon='BeatFollower.Assets.check.png' stroke-type='Clean' pad='1' on-click="follow-download-pressed" interactable="~download-interactable" active="~show-tick" hover-hint='Playlist Updated' />
+                <icon-button min-width='10' max-width='10' pref-width='10' pref-height='10' icon='BeatFollower.Assets.sync.png' stroke-type='Clean' pad='1' on-click="follow-download-pressed" interactable="~download-interactable" active="~show-update" hover-hint='Update Recommended Playlist'/>
             </horizontal>
           </stack>
         </custom-list>
-      </stack>
+
       <pg-button dir='Down' click-event='follower-list#PageDown'/>
     </vertical>
-    <icon-button pref-width='12' pref-height='10' icon='BeatFollower.Assets.download.png' stroke-type='Clean' pad='2' on-click="download-pressed" />
   </vertical>
-</stack>  
+</stack>

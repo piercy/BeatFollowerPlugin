@@ -2,15 +2,18 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using BeatFollower.Models;
 using BS_Utils.Utilities;
+using Newtonsoft.Json;
+using PlaylistLoaderLite.HarmonyPatches;
 using PlaylistLoaderLite.UI;
-using UnityEngine;
 
 namespace BeatFollower.Services
 {
     public class PlaylistService
     {
         private RequestService _requestService;
+        private string playlistFolderPath => $@"{IPA.Utilities.UnityGame.InstallPath}\Playlists\";
 
         public PlaylistService()
         {
@@ -23,24 +26,46 @@ namespace BeatFollower.Services
             if(_requestService == null)
                 Logger.log.Debug("Requesting is null");
 
+            
             SharedCoroutineStarter.instance.StartCoroutine(_requestService.Get($"feed/playlist/{playlistType}/{twitch}/BeatFollower{playlistType}-{twitch}.json", playlistJson =>
                 {
-                    Logger.log.Debug("PL: " + playlistJson.Length);
-                    var filePath = $@"G:\SteamLibrary\steamapps\common\Beat Saber\Playlists\BeatFollowerRecommended-{twitch}.json";
-
-                    File.WriteAllText(filePath, playlistJson);
-                    Logger.log.Debug("LOADING");
-
-                    PluginUI obj = Resources.FindObjectsOfTypeAll<PluginUI>().FirstOrDefault<PluginUI>();
-                    typeof(PluginUI).GetMethod("RefreshButtonPressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(obj, null);
-
-
+                    var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
+                    if (Directory.Exists(playlistFolderPath))
+                    {
+                        Logger.log.Debug("Writing Playlist: " + playlistFolderPath + playlistFileName + " Length: " + playlistJson.Length);
+                        File.WriteAllText(playlistFolderPath + playlistFileName, playlistJson);
+                    }
 
                 }));
-            
-            
         }
 
+        public bool DoesPlaylistExist(string twitch, string playlistType = "Recommended")
+        {
+            var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
+            var exists = File.Exists(playlistFolderPath + playlistFileName);
+            Logger.log.Debug("Exists: " + exists + " " + playlistFolderPath + playlistFileName);
+            return exists;
+        }
 
+        public int GetSongCount(string twitch, string playlistType = "Recommended")
+        {
+            var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
+            var exists = File.Exists(playlistFolderPath + playlistFileName);
+            if (exists)
+            {
+                var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(playlistFolderPath + playlistFileName));
+                Logger.log.Debug(playlistFileName + " " + playlist.Songs.Count);
+                return playlist.Songs.Count;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public void Reload()
+        {
+            PlaylistCollectionOverride.RefreshPlaylists();
+        }
     }
 }
