@@ -5,6 +5,8 @@ using System.Reflection;
 using BeatFollower.Models;
 using BS_Utils.Utilities;
 using Newtonsoft.Json;
+using PlaylistLoaderLite.HarmonyPatches;
+using PlaylistLoaderLite.UI;
 
 namespace BeatFollower.Services
 {
@@ -59,6 +61,11 @@ namespace BeatFollower.Services
             {
                 return 0;
             }
+        }
+
+        public void Reload()
+        {
+            PlaylistCollectionOverride.RefreshPlaylists();
         }
     }
 }

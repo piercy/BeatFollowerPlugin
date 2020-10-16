@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Reflection;
+using BeatFollower.Services;
 using HMUI;
 using BeatSaberMarkupLanguage;
-//using PlaylistLoaderLite.UI;
 using UnityEngine;
 
 namespace BeatFollower.UI
@@ -26,8 +26,10 @@ namespace BeatFollower.UI
         protected override void BackButtonWasPressed(ViewController topViewController)
         {
             BeatSaberUI.MainFlowCoordinator.DismissFlowCoordinator(this);
-            //PluginUI obj = Resources.FindObjectsOfTypeAll<PluginUI>().FirstOrDefault<PluginUI>();
-            //typeof(PluginUI).GetMethod("RefreshButtonPressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(obj, null);
+            var playlistService = new PlaylistService();
+
+            playlistService.Reload();
+            
         }
     }
 }
