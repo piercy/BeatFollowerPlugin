@@ -10,7 +10,6 @@ namespace BeatFollower.Services
 
         public event Action<IBeatmapLevel> LevelStarted;
         public event Action<LevelCompletionResults> LevelFinished;
-        private EndScreen _endScreen;
         private ActivityService _activityService;
 
         public void Initialize()
@@ -18,7 +17,6 @@ namespace BeatFollower.Services
             BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh += BSEventsOnearlyMenuSceneLoadedFresh;
             BS_Utils.Plugin.LevelDidFinishEvent += PluginOnLevelDidFinishEvent;
             BS_Utils.Utilities.BSEvents.gameSceneLoaded += BSEvents_gameSceneLoaded;
-            _endScreen = new EndScreen();
             _activityService = new ActivityService();
             
         }
@@ -28,7 +26,6 @@ namespace BeatFollower.Services
             BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh -= BSEventsOnearlyMenuSceneLoadedFresh;
             BS_Utils.Plugin.LevelDidFinishEvent -= PluginOnLevelDidFinishEvent;
             BS_Utils.Utilities.BSEvents.gameSceneLoaded -= BSEvents_gameSceneLoaded;
-            _endScreen = null;
             _activityService = null;
         }
         private void BSEventsOnearlyMenuSceneLoadedFresh(ScenesTransitionSetupDataSO obj)
@@ -42,13 +39,11 @@ namespace BeatFollower.Services
             //#pragma warning restore CS0618
 
             Logger.log.Debug("Start Setup");
-            _endScreen.Setup();
         }
 
         private void BSEvents_gameSceneLoaded()
         {
-            _endScreen.EnableRecommmendButton();
-            _endScreen.LastSong = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level;
+            SongService.LastSong = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level;
         }
 
         private void PluginOnLevelDidFinishEvent(StandardLevelScenesTransitionSetupDataSO levelscenestransitionsetupdataso, LevelCompletionResults levelcompletionresults)

@@ -11,8 +11,8 @@ using HMUI;
 
 namespace BeatFollower.UI
 {
-    [HotReload(@"C:\working\BeatFollowerPlugin\BeatFollower\UI\FollowerList.bsml")]
-    [ViewDefinition("BeatFollower.UI.FollowerList.bsml")]
+    [HotReload(@"C:\working\BeatFollowerPlugin\BeatFollower\UI\Views\FollowerList.bsml")]
+    [ViewDefinition("BeatFollower.UI.Views.FollowerList.bsml")]
     public class FollowerListViewController : BSMLAutomaticViewController
     {
 

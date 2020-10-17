@@ -43,6 +43,11 @@
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Libs\0Harmony.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="BeatmapCore, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatmapCore.dll</HintPath>
@@ -145,9 +150,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HarmonyPatches\ResultsViewControllerPatches.cs" />
+    <Compile Include="HarmonyPatches\SoloFreePlayCoordinatorPatches.cs" />
     <Compile Include="Installers\Startup.cs" />
+    <Compile Include="Models\CustomList.cs" />
     <Compile Include="Models\Follower.cs" />
     <Compile Include="Models\Playlist.cs" />
+    <Compile Include="Services\CustomListService.cs" />
+    <Compile Include="Services\SongService.cs" />
+    <Compile Include="UI\CustomListObject.cs" />
+    <Compile Include="UI\EndLevelUiCreator.cs" />
+    <Compile Include="UI\EndLevelViewController.cs" />
     <Compile Include="UI\FollowerListObject.cs" />
     <Compile Include="Models\Recommendation.cs" />
     <Compile Include="Services\ActivityService.cs" />
@@ -157,7 +170,6 @@
     <Compile Include="Services\PlaylistService.cs" />
     <Compile Include="Services\RequestService.cs" />
     <Compile Include="UI\FollowerListViewController.cs" />
-    <Compile Include="UI\EndScreen.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Logger.cs" />
@@ -170,11 +182,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildTargets.targets" />
-    <EmbeddedResource Include="UI\EndScreen-topleft.bsml" />
-    <EmbeddedResource Include="UI\EndScreen-bottomleft.bsml" />
-    <EmbeddedResource Include="UI\EndScreen-bottomright.bsml" />
-    <EmbeddedResource Include="UI\EndScreen-topright.bsml" />
-    <EmbeddedResource Include="UI\FollowerList.bsml" />
+    <EmbeddedResource Include="UI\Views\FollowerList.bsml" />
+    <EmbeddedResource Include="UI\Views\EndLevel.bsml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\download.png" />
@@ -188,6 +197,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\check.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="BuildTargets.targets" />
   <PropertyGroup>
