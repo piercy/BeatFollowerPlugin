@@ -37,9 +37,6 @@ namespace BeatFollower.Services
                 }
 
                 var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
-                if(scoreController == null)
-                    Logger.log.Debug("SC NULL");
-
                 var modifiedScore = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(levelCompletionResults.rawScore, scoreController.gameplayModifiersScoreMultiplier);
                 var maxScore = scoreController.immediateMaxPossibleRawScore;
                 var acc = modifiedScore / (maxScore * scoreController.gameplayModifiersScoreMultiplier);
