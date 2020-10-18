@@ -6,14 +6,14 @@
     <horizontal horizontal-fit='PreferredSize'>
       <custom-list  pref-height='10'  visible-cells='~customlist-list-visiblecells' cell-size='30' id='customlist-list' contents='customlists' list-direction='Horizontal'  >
         <horizontal align='Center'>
-          <button text='~list-name' on-click="list-share-pressed" />
+          <button text='~list-name' on-click="list-share-pressed" interactable="~button-interactable" />
         </horizontal>
       </custom-list>
     </horizontal>
     <horizontal pad-top='5' horizontal-fit='PreferredSize'>
       <custom-list  pref-height='10'  visible-cells='~customlist-list2-visiblecells' cell-size='30' id='customlist-list2' contents='customlists2' list-direction='Horizontal'  >
         <horizontal align='Center'>
-          <button text='~list-name' on-click="list-share-pressed" />
+          <button text='~list-name' on-click="list-share-pressed"  interactable="~button-interactable" />
         </horizontal>
       </custom-list>
     </horizontal>

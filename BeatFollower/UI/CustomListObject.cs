@@ -25,9 +25,22 @@ namespace BeatFollower.UI
         protected void ListSharePressed()
         {
             Logger.log.Debug($"Share Pressed: {name} {id}");
+            ButtonInteractable = false;
             _activityService.SubmitRecommendation(SongService.LastSong, id);
         }
 
+
+        private bool buttonInteractable = true;
+        [UIValue("button-interactable")]
+        public bool ButtonInteractable
+        {
+            get => buttonInteractable;
+            set
+            {
+                buttonInteractable = value;
+                NotifyPropertyChanged();
+            }
+        }
 
     }
 }
