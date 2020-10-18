@@ -80,7 +80,7 @@ namespace BeatFollower.UI
                         }
                         else
                         {
-                            customListUi.Add(new CustomListObject(customList));
+                            customListUi2.Add(new CustomListObject(customList));
                         }
                     }
 
