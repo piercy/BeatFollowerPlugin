@@ -8,7 +8,7 @@
       <pg-button dir='Up' click-event='follower-list#PageUp'/>
      
         <custom-list visible-cells='5' cell-size='10' id='follower-list' contents='followers' >
-          <stack bg='round-rect-panel' vertical-fit='Unconstrained' pad='1'>
+          <stack vertical-fit='Unconstrained' pad='1'>
             <horizontal child-expand-width='false' vertical-fit='Unconstrained' pad-left='1' pad-right='1'>
               <image id='follower-image' pref-width='10' src='~follower-profile-image' />
               <vertical horizontal-fit='Unconstrained' pad-left='2' pad-right='2' >
