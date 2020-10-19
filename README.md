@@ -20,3 +20,4 @@ Please make sure to have the following plugins installed:
 1. Copy your API Key and then open up the BeatFollower.ini in your prefered text editor. This file will be in the UserData folder, inside your Beat Saber installation folder (Note: you must start the game, with the plugin installed, for this file to get generated)
 1. Highlight the default API Key in the file (it should be a series of zero's). Then, paste the API Key you copied from this website. Make sure to save the file.
 1. That's it! You are good to go, you don't even need to restart the game.
+

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using BS_Utils.Utilities;
 using System.Collections;
 using System.Linq;
+using System.Runtime.InteropServices;
 using BeatFollower.Models;
 using BeatFollower.Utilities;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace BeatFollower.Services
         {
             try
             {
+                
                 LevelCompletionResults.LevelEndStateType levelEndState = levelCompletionResults.levelEndStateType;
                 var currentMap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
                 var currentSong = currentMap.difficultyBeatmap.level;
@@ -35,9 +37,6 @@ namespace BeatFollower.Services
                 }
 
                 var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
-                if(scoreController == null)
-                    Logger.log.Debug("SC NULL");
-
                 var modifiedScore = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(levelCompletionResults.rawScore, scoreController.gameplayModifiersScoreMultiplier);
                 var maxScore = scoreController.immediateMaxPossibleRawScore;
                 var acc = modifiedScore / (maxScore * scoreController.gameplayModifiersScoreMultiplier);
@@ -67,12 +66,13 @@ namespace BeatFollower.Services
                     EndSongTime = levelCompletionResults.endSongTime.ToString("##.##"),
                     SongDuration = levelCompletionResults.songDuration.ToString("##.##"),
                     Accuracy = normalizedAcc.ToString("##.##"),
-                    Is90 = BS_Utils.Gameplay.Gamemode.GameMode.Equals("90Degree")
+                    Is90 = currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("90Degree")
                 };
-                // cant be 90 and 360 at the same time, so if weve already detected 90, cant be 360, this is a best guess effort
-                activity.Is360 = (BS_Utils.Gameplay.Gamemode.GameMode.Equals("360Degree") || currentMap.difficultyBeatmap.beatmapData.spawnRotationEventsCount > 0) && !activity.Is90;
-                activity.OneSaber = BS_Utils.Gameplay.Gamemode.GameMode.Equals("OneSaber");
 
+                // cant be 90 and 360 at the same time, so if weve already detected 90, cant be 360, this is a best guess effort
+                activity.Is360 = (currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("360Degree") || currentMap.difficultyBeatmap.beatmapData.spawnRotationEventsCount > 0) && !activity.Is90;
+                activity.OneSaber = currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("OneSaber");
+                
                 if (customLevel)
                 {
                     activity.Hash =
@@ -94,7 +94,7 @@ namespace BeatFollower.Services
                 Logger.log.Error(ex);
             }
         }
-        public void SubmitRecommendation(IBeatmapLevel level)
+        public void SubmitRecommendation(IBeatmapLevel level, string listId = "")
         {
             Logger.log.Debug("Submitting Level");
             try
@@ -115,7 +115,7 @@ namespace BeatFollower.Services
 
                 string json = JsonConvert.SerializeObject(recommendation);
 
-                SharedCoroutineStarter.instance.StartCoroutine(_requestService.Post("recommendation/", json));
+                SharedCoroutineStarter.instance.StartCoroutine(_requestService.Post("recommendation/" + listId, json));
             }
             catch (Exception ex)
             {

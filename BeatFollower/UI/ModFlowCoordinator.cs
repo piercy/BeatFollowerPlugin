@@ -10,6 +10,7 @@ namespace BeatFollower.UI
     class ModFlowCoordinator : FlowCoordinator
     {
         private FollowerListViewController _followerListViewController;
+       
         
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
