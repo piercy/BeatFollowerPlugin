@@ -28,17 +28,16 @@ namespace BeatFollower.Services
             }
             else
             {
-                UnityWebRequest www = UnityWebRequest.Get(url);
-                www.SetRequestHeader("ApiKey", ConfigService.ApiKey);
-                yield return www.SendWebRequest();
-                if (www.isNetworkError || www.isHttpError)
+                UnityWebRequest uwr = UnityWebRequest.Get(url);
+                uwr.SetRequestHeader("ApiKey", ConfigService.ApiKey);
+                yield return uwr.SendWebRequest();
+                if (uwr.isNetworkError || uwr.isHttpError)
                 {
-                    Logger.log.Debug($"Error getting: {url}");
-                    Logger.log.Debug(www.error);
+                    Logger.log.Error($"Error While Getting: {url} {uwr.responseCode} {uwr.error}");
                 }
                 else
                 {
-                    string responseString = www.downloadHandler.text;
+                    string responseString = uwr.downloadHandler.text;
                     Logger.log.Debug("Response : " + responseString);
                     callback?.Invoke(responseString);
 
@@ -71,7 +70,7 @@ namespace BeatFollower.Services
 
                 if (uwr.isNetworkError || uwr.isHttpError)
                 {
-                    Logger.log.Debug("Error While Sending: " + uwr.error);
+                    Logger.log.Error($"Error While Posting: {uwr.responseCode} {uwr.error}" );
                 }
                 else
                 {
