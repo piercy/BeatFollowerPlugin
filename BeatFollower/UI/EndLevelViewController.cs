@@ -74,7 +74,7 @@ namespace BeatFollower.UI
                     // max 10 so its 5x2
                     foreach (var customList in customLists.Take(10))
                     {
-                        if (customListUi.Count >= 5)
+                        if (customListUi.Count < 5)
                         {
                             customListUi.Add(new CustomListObject(customList));
                         }
