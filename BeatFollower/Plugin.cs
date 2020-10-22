@@ -40,25 +40,9 @@ namespace BeatFollower
         public void OnApplicationStart()
         {
             Logger.log.Debug("OnApplicationStart");
-            ApplyHarmonyPatches();
-            ConfigService.Initialize();
+            
             _eventService = new EventService();
             _startup = new Startup();
-
-            new GameObject("EndLevelUiCreator").AddComponent<EndLevelUiCreator>().plugin = this;
-        }
-        public static void ApplyHarmonyPatches()
-        {
-            try
-            {
-                Logger.log.Debug("Applying Harmony patches.");
-                harmony.PatchAll(Assembly.GetExecutingAssembly());
-            }
-            catch (Exception ex)
-            {
-                Logger.log.Critical("Error applying Harmony patches: " + ex.Message);
-                Logger.log.Error(ex);
-            }
         }
         [OnEnable]
         public void OnEnable()
@@ -66,8 +50,12 @@ namespace BeatFollower
             try
             {
                 Logger.log.Debug("BeatFollower Enabled");
+                ApplyHarmonyPatches();
+                ConfigService.Initialize();
                 _eventService.Initialize();
                 _startup.AddButton();
+
+                new GameObject("EndLevelUiCreator").AddComponent<EndLevelUiCreator>().plugin = this;
             }
             catch (Exception ex)
             {
@@ -83,6 +71,8 @@ namespace BeatFollower
                 Logger.log.Debug("BeatFollower Disabled");
                 _eventService.Dispose();
                 _startup.RemoveButton();
+                RemoveHarmonyPatches();
+
 
             }
             catch (Exception ex)
@@ -97,5 +87,33 @@ namespace BeatFollower
         {
             Logger.log.Debug("OnApplicationQuit");
         }
+
+        public static void ApplyHarmonyPatches()
+        {
+            try
+            {
+                Logger.log.Debug("Applying Harmony patches.");
+                harmony.PatchAll(Assembly.GetExecutingAssembly());
+            }
+            catch (Exception ex)
+            {
+                Logger.log.Critical("Error applying Harmony patches: " + ex.Message);
+                Logger.log.Error(ex);
+            }
+        }
+        public static void RemoveHarmonyPatches()
+        {
+            try
+            {
+                Logger.log.Debug("Removing Harmony patches.");
+                harmony.UnpatchAll(HarmonyId);
+            }
+            catch (Exception ex)
+            {
+                Logger.log.Critical("Error removing harmony patches: " + ex.Message);
+                Logger.log.Error(ex);
+            }
+        }
+
     }
 }
