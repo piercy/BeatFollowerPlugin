@@ -3,9 +3,9 @@
   "id": "BeatFollower",
   "name": "BeatFollower",
   "author": "Piercy",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A plugin to record activities and song recommendations to your BeatFollower.com profile",
-  "gameVersion": "1.12.3",
+  "gameVersion": "1.12.2",
   "dependsOn": {
     "BeatSaberMarkupLanguage": "^1.4.0",
     "BS Utils": "^1.6.0",
