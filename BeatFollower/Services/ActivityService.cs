@@ -53,7 +53,7 @@ namespace BeatFollower.Services
 
                 var activity = new Activity
                 {
-                    NoFail = currentMap.gameplayModifiers.noFail,
+                    NoFail = currentMap.gameplayModifiers.noFailOn0Energy || currentMap.gameplayModifiers.demoNoFail,
                     WipMap = currentSong.levelID.EndsWith("WIP"),
                     PracticeMode = currentMap.practiceSettings != null,
                     Difficulty = currentMap.difficultyBeatmap.difficulty,
