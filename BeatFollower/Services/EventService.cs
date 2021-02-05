@@ -1,5 +1,6 @@
 ﻿using System;
 using BeatFollower.UI;
+using BS_Utils.Utilities;
 
 
 namespace BeatFollower.Services
@@ -15,17 +16,21 @@ namespace BeatFollower.Services
         public void Initialize()
         {
             BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh += BSEventsOnearlyMenuSceneLoadedFresh;
-            BS_Utils.Plugin.LevelDidFinishEvent += PluginOnLevelDidFinishEvent;
-            BS_Utils.Utilities.BSEvents.gameSceneLoaded += BSEvents_gameSceneLoaded;
+            BS_Utils.Utilities.BSEvents.levelCleared += BSEvents_levelLeft;
+            BS_Utils.Utilities.BSEvents.levelFailed += BSEvents_levelLeft;
+            BS_Utils.Utilities.BSEvents.levelQuit += BSEvents_levelLeft;
             _activityService = new ActivityService();
             
         }
 
+
         public void Dispose()
         {
             BS_Utils.Utilities.BSEvents.earlyMenuSceneLoadedFresh -= BSEventsOnearlyMenuSceneLoadedFresh;
-            BS_Utils.Plugin.LevelDidFinishEvent -= PluginOnLevelDidFinishEvent;
-            BS_Utils.Utilities.BSEvents.gameSceneLoaded -= BSEvents_gameSceneLoaded;
+            BS_Utils.Utilities.BSEvents.levelCleared -= BSEvents_levelLeft;
+            BS_Utils.Utilities.BSEvents.levelFailed -= BSEvents_levelLeft;
+            BS_Utils.Utilities.BSEvents.levelQuit -= BSEvents_levelLeft;
+
             _activityService = null;
         }
         private void BSEventsOnearlyMenuSceneLoadedFresh(ScenesTransitionSetupDataSO obj)
@@ -41,14 +46,17 @@ namespace BeatFollower.Services
             Logger.log.Debug("Start Setup");
         }
 
-        private void BSEvents_gameSceneLoaded()
+
+        private void BSEvents_levelLeft(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
         {
             SongService.LastSong = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level;
+
+            _activityService.SubmitActivity(arg2);
         }
 
         private void PluginOnLevelDidFinishEvent(StandardLevelScenesTransitionSetupDataSO levelscenestransitionsetupdataso, LevelCompletionResults levelcompletionresults)
         {
-            _activityService.SubmitActivity(levelcompletionresults);
+            
         }
 
       
