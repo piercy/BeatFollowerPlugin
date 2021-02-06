@@ -1,4 +1,4 @@
-﻿using BeatFollower.Models;
+using BeatFollower.Models;
 using BeatFollower.Services;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.ViewControllers;
@@ -40,6 +40,11 @@ namespace BeatFollower.UI
                 buttonInteractable = value;
                 NotifyPropertyChanged();
             }
+        }
+
+        public void Reset()
+        {
+	        ButtonInteractable = true;
         }
 
     }

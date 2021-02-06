@@ -35,10 +35,24 @@ namespace BeatFollower.UI
 			else
 			{
 				StartCoroutine(RecalculateListWidths());
+				ResetButtons();
 			} 
 		}
 
-		[UIComponent("customlist-list2")]
+        private void ResetButtons()
+        {
+	        foreach (CustomListObject button in customListUi)
+	        {
+				button.Reset();
+	        }
+
+	        foreach (CustomListObject button in customListUi2)
+	        {
+		        button.Reset();
+	        }
+		}	
+
+        [UIComponent("customlist-list2")]
 		public RectTransform customListList2Rect;
 
         [UIComponent("customlist-list2")]
