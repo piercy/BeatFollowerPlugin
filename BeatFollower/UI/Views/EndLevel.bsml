@@ -1,4 +1,4 @@
-﻿<bg>
+<bg>
   <vertical vertical-fit='Unconstrained'>
       <horizontal pad-bottom='4' horizontal-fit='PreferredSize'>
         <text text='BeatFollower Add To' align='Center' font-size='4'/>

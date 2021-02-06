@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BeatFollower.Models;
@@ -6,16 +6,19 @@ using BeatFollower.Services;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
+using UnityEngine;
 
 namespace BeatFollower.UI
 {
-    [HotReload(@"C:\working\BeatFollowerPlugin\BeatFollower\UI\Views\EndLevel.bsml")]
+    [HotReload(RelativePathToLayout = @"Views\\EndLevel.bsml")]
     [ViewDefinition("BeatFollower.UI.Views.EndLevel.bsml")]
     public class EndLevelViewController : BSMLAutomaticViewController
     {
+		[UIComponent("customlist-list")]
+		public RectTransform customListsListRect;
+
         [UIComponent("customlist-list")]
         public CustomCellListTableData customListsList;
-
 
         [UIValue("customlists")]
         public List<object> customListUi = new List<object>();
@@ -29,7 +32,11 @@ namespace BeatFollower.UI
                 CustomListService.GetCustomLists(SetCustomList);
             }
 
-        } 
+        }
+
+		[UIComponent("customlist-list2")]
+		public RectTransform customListList2Rect;
+
         [UIComponent("customlist-list2")]
         public CustomCellListTableData customListsList2;
 
@@ -93,6 +100,10 @@ namespace BeatFollower.UI
             {
                 Logger.log.Error(e);
             }
+
+			// Manually set the list container to the correct size
+			customListsListRect.sizeDelta = new Vector2(customListUi.Count * customListsList.cellSize, customListsListRect.sizeDelta.y);
+			customListList2Rect.sizeDelta = new Vector2(customListUi2.Count * customListsList2.cellSize, customListList2Rect.sizeDelta.y);
 
             customListsList.tableView.ReloadData();
             customListsList2.tableView.ReloadData();
