@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BeatFollower.Models;
@@ -10,7 +11,7 @@ using UnityEngine;
 
 namespace BeatFollower.UI
 {
-    [HotReload(RelativePathToLayout = @"Views\\EndLevel.bsml")]
+	[HotReload(RelativePathToLayout = @"Views\\EndLevel.bsml")]
     [ViewDefinition("BeatFollower.UI.Views.EndLevel.bsml")]
     public class EndLevelViewController : BSMLAutomaticViewController
     {
@@ -30,9 +31,12 @@ namespace BeatFollower.UI
             if (firstActivation)
             {
                 CustomListService.GetCustomLists(SetCustomList);
-            }
-
-        }
+			}
+			else
+			{
+				StartCoroutine(RecalculateListWidths());
+			} 
+		}
 
 		[UIComponent("customlist-list2")]
 		public RectTransform customListList2Rect;
@@ -101,12 +105,17 @@ namespace BeatFollower.UI
                 Logger.log.Error(e);
             }
 
+			StartCoroutine(RecalculateListWidths());
+			customListsList.tableView.ReloadData();
+            customListsList2.tableView.ReloadData();
+        }
+
+		private IEnumerator RecalculateListWidths()
+		{
+			yield return new WaitForEndOfFrame(); // Unity Moment
 			// Manually set the list container to the correct size
 			customListsListRect.sizeDelta = new Vector2(customListUi.Count * customListsList.cellSize, customListsListRect.sizeDelta.y);
 			customListList2Rect.sizeDelta = new Vector2(customListUi2.Count * customListsList2.cellSize, customListList2Rect.sizeDelta.y);
-
-            customListsList.tableView.ReloadData();
-            customListsList2.tableView.ReloadData();
-        }
+		}
     }
 }
