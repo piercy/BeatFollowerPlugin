@@ -36,19 +36,5 @@ namespace BeatFollower.UI
 			//   fc.InvokeMethod("SetTitle", new object[] {"BeatFollower", ViewController.AnimationType.None});
 			fc.InvokeMethod("SetTopScreenViewController", new object[] { endLevelUI, ViewController.AnimationType.None });
 		}
-
-        public static void Create()
-        {
-            //instance.StartCoroutine(instance.WaitForData());
-        }
-
-        private IEnumerator WaitForData()
-        {
-            if (endLevelUI == null)
-			{
-				endLevelUI = BeatSaberUI.CreateViewController<EndLevelViewController>();
-			}
-            yield return null;
-        }
     }
 }

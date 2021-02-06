@@ -115,10 +115,6 @@
             <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
             <Private>False</Private>
         </Reference>
-        <Reference Include="PlaylistLoaderLite">
-            <HintPath>$(BeatSaberDir)\Plugins\PlaylistLoaderLite.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
         <Reference Include="SongCore">
             <HintPath>$(BeatSaberDir)\Plugins\SongCore.dll</HintPath>
             <Private>False</Private>
