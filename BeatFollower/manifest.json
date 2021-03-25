@@ -7,7 +7,7 @@
   "description": "A plugin to record activities and song recommendations to your BeatFollower.com profile",
   "gameVersion": "1.13.4",
   "dependsOn": {
-    "BeatSaberMarkupLanguage": "^1.4.5",
+    "BeatSaberMarkupLanguage": "^1.5.1",
     "BS Utils": "^1.8.0",
     "SongCore": "^3.2.0",
     "BSIPA": "^4.1.4"
