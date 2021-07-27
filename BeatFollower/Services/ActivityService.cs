@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 using BS_Utils.Utilities;
 using System.Collections;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using BeatFollower.Models;
@@ -36,14 +37,13 @@ namespace BeatFollower.Services
                     return;
                 }
 
-                var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
+                var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault(x => x.isActiveAndEnabled);
                 var modifiedScore = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(levelCompletionResults.rawScore, scoreController.gameplayModifiersScoreMultiplier);
                 var maxScore = scoreController.immediateMaxPossibleRawScore;
                 var acc = modifiedScore / (maxScore * scoreController.gameplayModifiersScoreMultiplier);
                 var normalizedAcc = (acc * 100.0f);
 
-
-                var customLevel = true;
+				var customLevel = true;
 
                 if (!(currentSong is CustomBeatmapLevel))
                 {
@@ -51,9 +51,11 @@ namespace BeatFollower.Services
                     Logger.log.Debug("OST Level");
                 }
 
-                var activity = new Activity
+				Logger.log.Debug("levelCompletionResults.energy " + levelCompletionResults.energy);
+
+				var activity = new Activity
                 {
-                    NoFail = currentMap.gameplayModifiers.noFailOn0Energy || currentMap.gameplayModifiers.demoNoFail,
+                    NoFail = (currentMap.gameplayModifiers.noFailOn0Energy || currentMap.gameplayModifiers.demoNoFail) && Math.Abs(levelCompletionResults.energy) <= 0,
                     WipMap = currentSong.levelID.EndsWith("WIP"),
                     PracticeMode = currentMap.practiceSettings != null,
                     Difficulty = currentMap.difficultyBeatmap.difficulty,
@@ -63,14 +65,22 @@ namespace BeatFollower.Services
                     SongAuthorName = currentSong.songAuthorName,
                     LevelAuthorName = currentSong.levelAuthorName,
                     FullCombo = levelCompletionResults.fullCombo,
-                    EndSongTime = levelCompletionResults.endSongTime.ToString("##.##"),
-                    SongDuration = levelCompletionResults.songDuration.ToString("##.##"),
-                    Accuracy = normalizedAcc.ToString("##.##"),
+                    EndSongTime = levelCompletionResults.endSongTime.ToString("##.##", new CultureInfo("en-US")),
+                    SongDuration = levelCompletionResults.songDuration.ToString("##.##", new CultureInfo("en-US")),
+                    Accuracy = normalizedAcc.ToString("##.##",  new CultureInfo("en-US")),
                     Is90 = currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("90Degree")
                 };
 
-                // cant be 90 and 360 at the same time, so if weve already detected 90, cant be 360, this is a best guess effort
-                activity.Is360 = (currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("360Degree") || currentMap.difficultyBeatmap.beatmapData.spawnRotationEventsCount > 0) && !activity.Is90;
+                if (activity.Accuracy == "NaN")
+                {
+	                Logger.log.Debug("modified score: " + modifiedScore);
+	                Logger.log.Debug("maxScore: " + maxScore);
+	                Logger.log.Debug("gameplayModifiersScoreMultiplier: " + scoreController.gameplayModifiersScoreMultiplier);
+	                Logger.log.Debug("acc: " + acc);
+                }
+
+				// cant be 90 and 360 at the same time, so if weve already detected 90, cant be 360, this is a best guess effort
+				activity.Is360 = (currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("360Degree") || currentMap.difficultyBeatmap.beatmapData.spawnRotationEventsCount > 0) && !activity.Is90;
                 activity.OneSaber = currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("OneSaber");
                 
                 if (customLevel)
