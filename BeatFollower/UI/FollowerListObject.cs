@@ -1,8 +1,6 @@
 ﻿using BeatFollower.Services;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
-using IPA.Config.Data;
 
 namespace BeatFollower.Models
 {

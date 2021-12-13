@@ -1,13 +1,10 @@
 ﻿using System;
-using BeatFollower.UI;
-using BS_Utils.Utilities;
-
 
 namespace BeatFollower.Services
 {
     public class EventService : IDisposable
     {
-   
+
 
         public event Action<IBeatmapLevel> LevelStarted;
         public event Action<LevelCompletionResults> LevelFinished;
@@ -20,7 +17,7 @@ namespace BeatFollower.Services
             BS_Utils.Utilities.BSEvents.levelFailed += BSEvents_levelLeft;
             BS_Utils.Utilities.BSEvents.levelQuit += BSEvents_levelLeft;
             _activityService = new ActivityService();
-            
+
         }
 
 
@@ -56,9 +53,9 @@ namespace BeatFollower.Services
 
         private void PluginOnLevelDidFinishEvent(StandardLevelScenesTransitionSetupDataSO levelscenestransitionsetupdataso, LevelCompletionResults levelcompletionresults)
         {
-            
+
         }
 
-      
+
     }
 }

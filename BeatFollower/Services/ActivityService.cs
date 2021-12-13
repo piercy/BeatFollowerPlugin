@@ -1,14 +1,10 @@
 using System;
 using Newtonsoft.Json;
-using BS_Utils.Utilities;
-using System.Collections;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using BeatFollower.Models;
 using BeatFollower.Utilities;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace BeatFollower.Services
 {
@@ -26,11 +22,11 @@ namespace BeatFollower.Services
         {
             try
             {
-                
+
                 LevelCompletionResults.LevelEndStateType levelEndState = levelCompletionResults.levelEndStateType;
                 var currentMap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
                 var currentSong = currentMap.difficultyBeatmap.level;
-                
+
                 if (currentSong.IsWip())
                 {
                     Logger.log.Debug("WIP so not sending activity.");
@@ -82,7 +78,7 @@ namespace BeatFollower.Services
 				// cant be 90 and 360 at the same time, so if weve already detected 90, cant be 360, this is a best guess effort
 				activity.Is360 = (currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("360Degree") || currentMap.difficultyBeatmap.beatmapData.spawnRotationEventsCount > 0) && !activity.Is90;
                 activity.OneSaber = currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("OneSaber");
-                
+
                 if (customLevel)
                 {
                     activity.Hash =

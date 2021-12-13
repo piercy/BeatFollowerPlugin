@@ -1,9 +1,6 @@
-﻿using System.Linq;
-using System.Reflection;
-using BeatFollower.Services;
+﻿using BeatFollower.Services;
 using HMUI;
 using BeatSaberMarkupLanguage;
-using UnityEngine;
 
 namespace BeatFollower.UI
 {

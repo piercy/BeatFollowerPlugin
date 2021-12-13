@@ -11,10 +11,10 @@ namespace BeatFollower.Installers
         public void Install()
         {
             var beatFollowerViewController = BeatSaberUI.CreateViewController<FollowerListViewController>();
-        
+
         }
 
-    public void AddButton()
+		 public void AddButton()
         {
             if (_menuButton == null)
                 _menuButton = new MenuButton("BeatFollower", "", SummonFlowCoordinator);

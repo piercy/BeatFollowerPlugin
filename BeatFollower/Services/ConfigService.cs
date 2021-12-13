@@ -1,5 +1,4 @@
-﻿using System;
-using BS_Utils.Utilities;
+﻿using BS_Utils.Utilities;
 
 namespace BeatFollower.Services
 {
@@ -30,7 +29,7 @@ namespace BeatFollower.Services
 
             Position = _config.GetString(Name, "Position");
             ApiKey = _config.GetString(Name, "ApiKey");
-            ApiUrl = _config.GetString(Name, "ApiUrl"); 
+            ApiUrl = _config.GetString(Name, "ApiUrl");
 
             ApiKeyDebug = _config.GetString(Name, "ApiKeyDebug");
             ApiUrlDebug = _config.GetString(Name, "ApiUrlDebug");
@@ -77,13 +76,13 @@ namespace BeatFollower.Services
                 ApiUrl += "/";
             }
 
-           
+
             Logger.log.Debug($"ApiUrl: {ApiUrl}");
 
             if(Debug)
                 Logger.log.Debug($"ApiKey: {ApiKey}");
         }
 
-        
+
     }
 }

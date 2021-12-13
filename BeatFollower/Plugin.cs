@@ -1,20 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using BeatFollower.Installers;
-using BeatFollower.Models;
 using BeatFollower.Services;
 using BeatFollower.UI;
-using BS_Utils.Utilities;
 using HarmonyLib;
 using IPA;
-using IPA.Config;
-using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.Networking;
-using Config = BS_Utils.Utilities.Config;
-
 
 namespace BeatFollower
 {
@@ -40,7 +31,7 @@ namespace BeatFollower
         public void OnApplicationStart()
         {
             Logger.log.Debug("OnApplicationStart");
-            
+
             _eventService = new EventService();
             _startup = new Startup();
         }
