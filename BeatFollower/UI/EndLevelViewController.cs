@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace BeatFollower.UI
 {
-	[HotReload(RelativePathToLayout = @"Views\\EndLevel.bsml")]
+	[HotReload(RelativePathToLayout = @"Views\EndLevel.bsml")]
     [ViewDefinition("BeatFollower.UI.Views.EndLevel.bsml")]
     public class EndLevelViewController : BSMLAutomaticViewController
     {
@@ -36,7 +36,7 @@ namespace BeatFollower.UI
 			{
 				StartCoroutine(RecalculateListWidths());
 				ResetButtons();
-			} 
+			}
 		}
 
         private void ResetButtons()
@@ -50,7 +50,7 @@ namespace BeatFollower.UI
 	        {
 		        button.Reset();
 	        }
-		}	
+		}
 
         [UIComponent("customlist-list2")]
 		public RectTransform customListList2Rect;
@@ -69,7 +69,7 @@ namespace BeatFollower.UI
                 list1VisibleCells = value;
                 NotifyPropertyChanged();
             }
-        }  
+        }
         private int list2VisibleCells = 5;
 
         [UIValue("customlist-list2-visiblecells")]
@@ -83,8 +83,6 @@ namespace BeatFollower.UI
             }
         }
 
-        
-        
         [UIValue("customlists2")]
         public List<object> customListUi2 = new List<object>();
 

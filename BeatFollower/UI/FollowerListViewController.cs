@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using BeatFollower.Models;
 using BeatFollower.Services;
 using System.Collections.Generic;
@@ -7,16 +6,14 @@ using System.Linq;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
-using HMUI;
 
 namespace BeatFollower.UI
 {
-    [HotReload(@"C:\working\BeatFollowerPlugin\BeatFollower\UI\Views\FollowerList.bsml")]
+    [HotReload(RelativePathToLayout = @"Views\FollowerList.bsml")]
     [ViewDefinition("BeatFollower.UI.Views.FollowerList.bsml")]
     public class FollowerListViewController : BSMLAutomaticViewController
     {
-
-        [UIComponent("follower-list")]
+	    [UIComponent("follower-list")]
         public CustomCellListTableData followerList;
 
         [UIValue("followers")]
@@ -24,7 +21,6 @@ namespace BeatFollower.UI
 
         private FollowService _followService;
         private PlaylistService _playlistService;
-
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
@@ -37,12 +33,9 @@ namespace BeatFollower.UI
 
                 if(_playlistService == null)
                     _playlistService = new PlaylistService();
-                
+
                 _followService.GetFollowing(SetFollowers);
-
-
             }
-            
         }
 
         public void SetFollowers(List<Follower> followers)
