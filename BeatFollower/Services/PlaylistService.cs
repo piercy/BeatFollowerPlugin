@@ -25,36 +25,45 @@ namespace BeatFollower.Services
 			SharedCoroutineStarter.instance.StartCoroutine(_requestService.Get($"feed/playlist/{playlistType}/{twitch}/BeatFollower{playlistType}-{twitch}.json", playlistJson =>
 			{
 				var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
-				if (Directory.Exists(PlaylistFolderPath))
-				{
-					_siraLog.Debug("Writing Playlist: " + PlaylistFolderPath + playlistFileName + " Length: " + playlistJson.Length);
-					File.WriteAllText(PlaylistFolderPath + playlistFileName, playlistJson);
-				}
+				Directory.CreateDirectory(PlaylistFolderPath);
+
+				var playListPath = Path.Combine(PlaylistFolderPath, playlistFileName);
+				_siraLog.Debug("Writing Playlist: " + playListPath + " Length: " + playlistJson.Length);
+				File.WriteAllText(playListPath, playlistJson);
 			}));
 		}
 
 		public bool DoesPlaylistExist(string twitch, string playlistType = "Recommended")
 		{
-			var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
-			var exists = File.Exists(PlaylistFolderPath + playlistFileName);
-			_siraLog.Debug("Exists: " + exists + " " + PlaylistFolderPath + playlistFileName);
+			if (!Directory.Exists(PlaylistFolderPath))
+			{
+				return false;
+			}
+
+			var playListPath = Path.Combine(PlaylistFolderPath, $"BeatFollowerRecommended-{twitch}.json");
+			var exists = File.Exists(playListPath);
+			_siraLog.Debug("Exists: " + exists + " " + playListPath);
 			return exists;
 		}
 
 		public int GetSongCount(string twitch, string playlistType = "Recommended")
 		{
-			var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
-			var exists = File.Exists(PlaylistFolderPath + playlistFileName);
-			if (exists)
-			{
-				var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(PlaylistFolderPath + playlistFileName));
-				_siraLog.Debug(playlistFileName + " " + playlist.Songs.Count);
-				return playlist.Songs.Count;
-			}
-			else
+			if (!DoesPlaylistExist(twitch))
 			{
 				return 0;
 			}
+
+			var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
+			var playListPath = Path.Combine(PlaylistFolderPath, playlistFileName);
+			var exists = File.Exists(playListPath);
+			if (exists)
+			{
+				var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(playListPath));
+				_siraLog.Debug(playlistFileName + " " + playlist.Songs.Count);
+				return playlist.Songs.Count;
+			}
+
+			return 0;
 		}
 	}
 }
