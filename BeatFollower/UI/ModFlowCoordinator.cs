@@ -1,33 +1,65 @@
-﻿using BeatFollower.Services;
+﻿using System;
 using HMUI;
 using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.MenuButtons;
+using Zenject;
 
 namespace BeatFollower.UI
 {
-    class ModFlowCoordinator : FlowCoordinator
-    {
-        private FollowerListViewController _followerListViewController;
-       
-        
-        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
-        {
-            if (firstActivation)
-            {
-                SetTitle("BeatFollower");
-                showBackButton = true;
-            }
+	internal class ModFlowCoordinator : FlowCoordinator, IInitializable, IDisposable
+	{
+		private MainFlowCoordinator _mainFlowCoordinator = null!;
+		private FollowerListViewController _followerListViewController = null!;
 
-            _followerListViewController = BeatSaberUI.CreateViewController<FollowerListViewController>();
-            this.ProvideInitialViewControllers(_followerListViewController);
-        }
+		private MenuButton? _menuButton;
 
-        protected override void BackButtonWasPressed(ViewController topViewController)
-        {
-            BeatSaberUI.MainFlowCoordinator.DismissFlowCoordinator(this);
-            var playlistService = new PlaylistService();
+		[Inject]
+		internal void Construct(MainFlowCoordinator mainFlowCoordinator, FollowerListViewController followerListViewController)
+		{
+			_mainFlowCoordinator = mainFlowCoordinator;
+			_followerListViewController = followerListViewController;
+		}
 
-            playlistService.Reload();
-            
-        }
-    }
+		public void Initialize()
+		{
+			_menuButton ??= new MenuButton(nameof(BeatFollower), Showtime);
+			MenuButtons.instance.RegisterButton(_menuButton);
+		}
+
+		private void Showtime()
+		{
+			_mainFlowCoordinator.PresentFlowCoordinator(this);
+		}
+
+		protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
+		{
+			if (firstActivation)
+			{
+				SetTitle(nameof(BeatFollower));
+				showBackButton = true;
+			}
+
+			ProvideInitialViewControllers(_followerListViewController);
+		}
+
+		public void Dispose()
+		{
+			if (_menuButton == null)
+			{
+				return;
+			}
+
+			if (MenuButtons.IsSingletonAvailable && BSMLParser.IsSingletonAvailable)
+			{
+				MenuButtons.instance.UnregisterButton(_menuButton);
+			}
+
+			_menuButton = null!;
+		}
+
+		protected override void BackButtonWasPressed(ViewController _)
+		{
+			_mainFlowCoordinator.DismissFlowCoordinator(this);
+		}
+	}
 }

@@ -1,38 +1,46 @@
-﻿using BeatFollower.Services;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using BeatFollower.Models;
+using BeatFollower.Services;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.ViewControllers;
+using JetBrains.Annotations;
+using SiraUtil.Logging;
 
-namespace BeatFollower.Models
+namespace BeatFollower.UI
 {
-    public class FollowerListObject : BSMLAutomaticViewController
-    {
-        private PlaylistService _playlistService;
+	internal class FollowerListObject : INotifyPropertyChanged
+	{
+		private readonly SiraLog _siraLog;
+		private readonly PlaylistService _playlistService;
 
-        public FollowerListObject(Follower follower)
-        {
-            _playlistService = new PlaylistService();
+		public FollowerListObject(SiraLog siraLog, PlaylistService playlistService, Follower follower)
+		{
+			_siraLog = siraLog;
+			_playlistService = playlistService;
 
-            this.name = follower.Twitch;
-            this.profileImageUrl = follower.ProfileImageUrl;
-            ShowDownloadButton = !follower.RecommendedPlaylistInstalled;
-            ShowUpdateButton = follower.RecommendedPlaylistInstalled;
-            if (follower.RecommendedPlaylistInstalled)
-            {
-                this.recommendedCount = follower.RecommendedPlaylistCount + "/" + follower.RecommendedPlaylistWebsiteCount;
-            }
-            else
-            {
-                this.recommendedCount = follower.RecommendedPlaylistWebsiteCount.ToString();
-            }
-        }
+			name = follower.Twitch;
+			profileImageUrl = follower.ProfileImageUrl;
+			ShowDownloadButton = !follower.RecommendedPlaylistInstalled;
+			ShowUpdateButton = follower.RecommendedPlaylistInstalled;
 
-        [UIValue("follower-name")]
-        string name;
-        [UIValue("recommended-count")]
-        string recommendedCount;
+			if (follower.RecommendedPlaylistInstalled)
+			{
+				recommendedCount = follower.RecommendedPlaylistCount + "/" + follower.RecommendedPlaylistWebsiteCount;
+			}
+			else
+			{
+				recommendedCount = follower.RecommendedPlaylistWebsiteCount.ToString();
+			}
+		}
 
-        [UIValue("follower-profile-image")]
-        string profileImageUrl;
+		[UIValue("follower-name")]
+		string name;
+
+		[UIValue("recommended-count")]
+		string recommendedCount;
+
+		[UIValue("follower-profile-image")]
+		string profileImageUrl;
 
         private bool showDownloadButton = true;
         [UIValue("show-download")]
@@ -77,23 +85,28 @@ namespace BeatFollower.Models
             get => downloadInteractable;
             set {
                 downloadInteractable = value;
-                NotifyPropertyChanged(); 
+                NotifyPropertyChanged();
             }
         }
 
-        [UIAction("follow-download-pressed")]
-        protected void FollowDownloadPressed()
-        {
-            Logger.log.Debug("Download/Update Pressed.");
+		[UIAction("follow-download-pressed")]
+		protected void FollowDownloadPressed()
+		{
+			_siraLog.Debug("Download/Update Pressed.");
 
-            DownloadInteractable = false;
-            ShowUpdateButton = false;
-            ShowDownloadButton = false;
-            ShowTickButton = true;
-            _playlistService.DownloadPlaylist(this.name);
-        }
+			DownloadInteractable = false;
+			ShowUpdateButton = false;
+			ShowDownloadButton = false;
+			ShowTickButton = true;
+			_playlistService.DownloadPlaylist(name);
+		}
 
-        
+		public event PropertyChangedEventHandler? PropertyChanged;
 
-    }
+		[NotifyPropertyChangedInvocator]
+		protected virtual void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
 }
