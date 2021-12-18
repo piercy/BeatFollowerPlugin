@@ -12,7 +12,7 @@ namespace BeatFollower
 	public class Plugin
 	{
 		[Init]
-		public void Init(Config conf, Logger logger, Zenjector zenjector)
+		public Plugin(Config conf, Logger logger, Zenjector zenjector)
 		{
 			var config = conf.Generated<PluginConfig>();
 			ConfigMigrationService.MigrateFromOldConfig(logger, config);
