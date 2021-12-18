@@ -7,7 +7,7 @@ namespace BeatFollower.Installers
 	{
 		public override void InstallBindings()
 		{
-			Container.Bind<BeatmapCollector>().AsSingle();
+			Container.BindInterfacesTo<BeatmapCollector>().AsSingle();
 		}
 	}
 }
