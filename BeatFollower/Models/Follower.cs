@@ -16,7 +16,5 @@
 			Twitch = twitch;
 			ProfileImageUrl = profileImageUrl;
 		}
-
-
 	}
 }
