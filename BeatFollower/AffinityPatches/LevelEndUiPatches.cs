@@ -2,20 +2,17 @@
 using BS_Utils.Utilities;
 using HMUI;
 using SiraUtil.Affinity;
-using SiraUtil.Logging;
 using Zenject;
 
 namespace BeatFollower.AffinityPatches
 {
 	internal class LevelEndUiPatches : IAffinity
 	{
-		private readonly SiraLog _siraLog;
 		private readonly LazyInject<EndLevelViewController> _endLevelViewController;
 
 		[Inject]
-		public LevelEndUiPatches(SiraLog siraLog, LazyInject<EndLevelViewController> endLevelViewController)
+		public LevelEndUiPatches(LazyInject<EndLevelViewController> endLevelViewController)
 		{
-			_siraLog = siraLog;
 			_endLevelViewController = endLevelViewController;
 		}
 
