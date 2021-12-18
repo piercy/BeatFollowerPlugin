@@ -6,6 +6,7 @@ using Logger = IPA.Logging.Logger;
 
 namespace BeatFollower.Services
 {
+	// TODO: Remove this in due time.
 	internal class ConfigMigrationService
 	{
 		internal static void MigrateFromOldConfig(Logger logger, PluginConfig config)
@@ -34,12 +35,6 @@ namespace BeatFollower.Services
 			config.ApiKey = bsUtilsConfig.GetString(nameof(BeatFollower), "ApiKey");
 			config.ApiUrl = bsUtilsConfig.GetString(nameof(BeatFollower), "ApiUrl");
 			config.Position = bsUtilsConfig.GetString(nameof(BeatFollower), "Position");
-
-			// if (config.Debug)
-			{
-				logger.Debug("##### BEATFOLLOWER DEBUG IS SET TO TRUE. YOU SHOULD NOT UPLOAD YOUR LOG FILES ANYWHERE AS SENSITIVE INFORMATION COULD BE LEAKED! #####");
-				logger.Debug("##### BEATFOLLOWER DEBUG IS SET TO TRUE. USE OF DEBUG MODE IS AT YOUR OWN RISK! #####");
-			}
 
 			// Clearing out the old address automatically for the testers. It will then set the default
 			if (config.ApiUrl.StartsWith("http://direct.beatfollower.com"))
