@@ -73,6 +73,11 @@ namespace BeatFollower
 			{
 				ApiKey = PluginConfig.DEFAULT_API_KEY;
 			}
+
+			if (!string.IsNullOrWhiteSpace(ApiUrlDebug) && !ApiUrlDebug!.EndsWith("/"))
+			{
+				ApiUrlDebug += "/";
+			}
 		}
 	}
 }
