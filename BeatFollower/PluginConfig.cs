@@ -57,7 +57,7 @@ namespace BeatFollower
 			// Set defaults
 			if (string.IsNullOrEmpty(ApiUrl))
 			{
-				ApiUrl = PluginConfig.DEFAULT_API_URL;
+				ApiUrl = DEFAULT_API_URL;
 			}
 			else if (!ApiUrl.EndsWith("/"))
 			{
@@ -71,7 +71,7 @@ namespace BeatFollower
 
 			if (string.IsNullOrEmpty(ApiKey))
 			{
-				ApiKey = PluginConfig.DEFAULT_API_KEY;
+				ApiKey = DEFAULT_API_KEY;
 			}
 
 			if (!string.IsNullOrWhiteSpace(ApiUrlDebug) && !ApiUrlDebug!.EndsWith("/"))
