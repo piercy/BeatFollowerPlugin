@@ -1,4 +1,5 @@
 ﻿using BeatFollower.Services;
+using IPA.Loader;
 using Zenject;
 
 namespace BeatFollower.Installers
@@ -14,6 +15,11 @@ namespace BeatFollower.Installers
 
 		public override void InstallBindings()
 		{
+			if (PluginManager.GetPluginFromId("BS Utils") != null && ConfigMigrationService.ShouldRunMigration())
+			{
+				ConfigMigrationService.MigrateFromOldConfig(_config);
+			}
+
 			Container.BindInstance(_config);
 
 			Container.BindInterfacesAndSelfTo<ActivityService>().AsSingle();

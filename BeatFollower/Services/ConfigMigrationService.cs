@@ -1,32 +1,19 @@
 ﻿using System.IO;
-using System.Runtime.CompilerServices;
-using IPA.Loader;
 using IPA.Utilities;
-using Logger = IPA.Logging.Logger;
 
 namespace BeatFollower.Services
 {
 	// TODO: Remove this in due time.
 	internal class ConfigMigrationService
 	{
-		internal static void MigrateFromOldConfig(Logger logger, PluginConfig config)
+		private static readonly string OldConfigPath = Path.Combine(UnityGame.UserDataPath, nameof(BeatFollower) + ".ini");
+
+		internal static bool ShouldRunMigration()
 		{
-			var oldConfigPath = Path.Combine(UnityGame.UserDataPath, nameof(BeatFollower) + ".ini");
-			if (!File.Exists(oldConfigPath))
-			{
-				return;
-			}
-
-			if (PluginManager.GetPluginFromId("BS Utils") != null)
-			{
-				MigrateConfigInternal(logger, config);
-			}
-
-			File.Delete(oldConfigPath);
+			return File.Exists(OldConfigPath);
 		}
 
-		[MethodImpl(MethodImplOptions.NoInlining)]
-		private static void MigrateConfigInternal(Logger logger, PluginConfig config)
+		internal static void MigrateFromOldConfig(PluginConfig config)
 		{
 			using var _ = config.ChangeTransaction;
 
@@ -41,6 +28,8 @@ namespace BeatFollower.Services
 			{
 				config.ApiUrl = PluginConfig.DEFAULT_API_URL;
 			}
+
+			File.Delete(OldConfigPath);
 		}
 	}
 }
