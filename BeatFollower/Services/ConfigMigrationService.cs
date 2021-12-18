@@ -17,7 +17,7 @@ namespace BeatFollower.Services
 				return;
 			}
 
-			if (PluginManager.GetPlugin("BS Utils") != null)
+			if (PluginManager.GetPluginFromId("BS Utils") != null)
 			{
 				MigrateConfigInternal(logger, config);
 			}
