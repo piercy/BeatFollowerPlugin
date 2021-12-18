@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BeatFollower.Models
 {
@@ -12,4 +8,3 @@ namespace BeatFollower.Models
         public List<object> Songs { get; set; }
     }
 }
-    

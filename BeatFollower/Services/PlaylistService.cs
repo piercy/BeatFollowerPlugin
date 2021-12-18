@@ -1,71 +1,69 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using System.IO;
 using BeatFollower.Models;
-using BS_Utils.Utilities;
 using Newtonsoft.Json;
-//using PlaylistLoaderLite.HarmonyPatches;
-//using PlaylistLoaderLite.UI;
+using SiraUtil.Logging;
 
 namespace BeatFollower.Services
 {
-    public class PlaylistService
-    {
-        private RequestService _requestService;
-        private string playlistFolderPath => $@"{IPA.Utilities.UnityGame.InstallPath}\Playlists\";
+	internal class PlaylistService
+	{
+		private readonly SiraLog _siraLog;
+		private readonly RequestService _requestService;
 
-        public PlaylistService()
-        {
-            _requestService = new RequestService();
-        }
+		private static string PlaylistFolderPath => Path.Combine(IPA.Utilities.UnityGame.InstallPath, "Playlists");
 
-        public void DownloadPlaylist(string twitch, string playlistType = "Recommended")
-        {
-            Logger.log.Debug("Requesting playlist");
-            if(_requestService == null)
-                Logger.log.Debug("Requesting is null");
+		public PlaylistService(SiraLog siraLog, RequestService requestService)
+		{
+			_siraLog = siraLog;
+			_requestService = requestService;
+		}
 
-            
-            SharedCoroutineStarter.instance.StartCoroutine(_requestService.Get($"feed/playlist/{playlistType}/{twitch}/BeatFollower{playlistType}-{twitch}.json", playlistJson =>
-                {
-                    var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
-                    if (Directory.Exists(playlistFolderPath))
-                    {
-                        Logger.log.Debug("Writing Playlist: " + playlistFolderPath + playlistFileName + " Length: " + playlistJson.Length);
-                        File.WriteAllText(playlistFolderPath + playlistFileName, playlistJson);
-                    }
+		public void DownloadPlaylist(string twitch, string playlistType = "Recommended")
+		{
+			_siraLog.Debug("Requesting playlist");
 
-                }));
-        }
+			SharedCoroutineStarter.instance.StartCoroutine(_requestService.Get($"feed/playlist/{playlistType}/{twitch}/BeatFollower{playlistType}-{twitch}.json", playlistJson =>
+			{
+				var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
+				Directory.CreateDirectory(PlaylistFolderPath);
 
-        public bool DoesPlaylistExist(string twitch, string playlistType = "Recommended")
-        {
-            var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
-            var exists = File.Exists(playlistFolderPath + playlistFileName);
-            Logger.log.Debug("Exists: " + exists + " " + playlistFolderPath + playlistFileName);
-            return exists;
-        }
+				var playListPath = Path.Combine(PlaylistFolderPath, playlistFileName);
+				_siraLog.Debug("Writing Playlist: " + playListPath + " Length: " + playlistJson.Length);
+				File.WriteAllText(playListPath, playlistJson);
+			}));
+		}
 
-        public int GetSongCount(string twitch, string playlistType = "Recommended")
-        {
-            var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
-            var exists = File.Exists(playlistFolderPath + playlistFileName);
-            if (exists)
-            {
-                var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(playlistFolderPath + playlistFileName));
-                Logger.log.Debug(playlistFileName + " " + playlist.Songs.Count);
-                return playlist.Songs.Count;
-            }
-            else
-            {
-                return 0;
-            }
-        }
+		public bool DoesPlaylistExist(string twitch, string playlistType = "Recommended")
+		{
+			if (!Directory.Exists(PlaylistFolderPath))
+			{
+				return false;
+			}
 
-        public void Reload()
-        {
-           // PlaylistCollectionOverride.RefreshPlaylists();
-        }
-    }
+			var playListPath = Path.Combine(PlaylistFolderPath, $"BeatFollowerRecommended-{twitch}.json");
+			var exists = File.Exists(playListPath);
+			_siraLog.Debug("Exists: " + exists + " " + playListPath);
+			return exists;
+		}
+
+		public int GetSongCount(string twitch, string playlistType = "Recommended")
+		{
+			if (!DoesPlaylistExist(twitch))
+			{
+				return 0;
+			}
+
+			var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
+			var playListPath = Path.Combine(PlaylistFolderPath, playlistFileName);
+			var exists = File.Exists(playListPath);
+			if (exists)
+			{
+				var playlist = JsonConvert.DeserializeObject<Playlist>(File.ReadAllText(playListPath));
+				_siraLog.Debug(playlistFileName + " " + playlist.Songs.Count);
+				return playlist.Songs.Count;
+			}
+
+			return 0;
+		}
+	}
 }

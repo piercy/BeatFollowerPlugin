@@ -1,51 +1,67 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using BeatFollower.Models;
 using BeatFollower.Services;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.ViewControllers;
+using JetBrains.Annotations;
+using SiraUtil.Logging;
 
 namespace BeatFollower.UI
 {
-    public class CustomListObject : BSMLAutomaticViewController
-    {
-        public CustomListObject(CustomList customList)
-        {
-            this.name = customList.Name;
-            id = customList._Id;
-            _activityService = new ActivityService();
-        }
+	internal class CustomListObject : INotifyPropertyChanged
+	{
+		private readonly SiraLog _siraLog;
+		private readonly ActivityService _activityService;
+		private readonly LastBeatmapManager _lastBeatmapManager;
 
-        [UIValue("list-name")]
-        string name;
+		private readonly string _id;
 
-        private string id;
-        private ActivityService _activityService;
+		[UIValue("list-name")]
+		internal readonly string listName;
 
+		public CustomListObject(SiraLog siraLog, ActivityService activityService, LastBeatmapManager lastBeatmapManager, CustomList customList)
+		{
+			_siraLog = siraLog;
+			_activityService = activityService;
+			_lastBeatmapManager = lastBeatmapManager;
 
-        [UIAction("list-share-pressed")]
-        protected void ListSharePressed()
-        {
-            Logger.log.Debug($"Share Pressed: {name} {id}");
-            ButtonInteractable = false;
-            _activityService.SubmitRecommendation(SongService.LastSong, id);
-        }
+			_id = customList._Id;
+			listName = customList.Name;
+		}
 
+		[UIAction("list-share-pressed")]
+		protected void ListSharePressed()
+		{
+			_siraLog.Debug($"Share Pressed: {listName} {_id}");
 
-        private bool buttonInteractable = true;
-        [UIValue("button-interactable")]
-        public bool ButtonInteractable
-        {
-            get => buttonInteractable;
-            set
-            {
-                buttonInteractable = value;
-                NotifyPropertyChanged();
-            }
-        }
+			ButtonInteractable = false;
+			_activityService.SubmitRecommendation(_lastBeatmapManager.LastSong, _id);
+		}
 
-        public void Reset()
-        {
-	        ButtonInteractable = true;
-        }
+		private bool _buttonInteractable = true;
 
-    }
+		[UIValue("button-interactable")]
+		public bool ButtonInteractable
+		{
+			get => _buttonInteractable;
+			set
+			{
+				_buttonInteractable = value;
+				NotifyPropertyChanged();
+			}
+		}
+
+		public void Reset()
+		{
+			ButtonInteractable = true;
+		}
+
+		public event PropertyChangedEventHandler? PropertyChanged;
+
+		[NotifyPropertyChangedInvocator]
+		protected virtual void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
 }

@@ -1,21 +1,22 @@
-<bg>
-  <vertical vertical-fit='Unconstrained'>
-      <horizontal pad-bottom='4' horizontal-fit='PreferredSize'>
-        <text text='BeatFollower Add To' align='Center' font-size='4'/>
-      </horizontal>
-    <horizontal horizontal-fit='PreferredSize'>
-      <custom-list  pref-height='10'  visible-cells='~customlist-list-visiblecells' cell-size='30' id='customlist-list' contents='customlists' list-direction='Horizontal'  >
-        <horizontal align='Center'>
-          <button text='~list-name' on-click="list-share-pressed" interactable="~button-interactable" />
-        </horizontal>
-      </custom-list>
-    </horizontal>
-    <horizontal pad-top='5' horizontal-fit='PreferredSize'>
-      <custom-list  pref-height='10'  visible-cells='~customlist-list2-visiblecells' cell-size='30' id='customlist-list2' contents='customlists2' list-direction='Horizontal'  >
-        <horizontal align='Center'>
-          <button text='~list-name' on-click="list-share-pressed"  interactable="~button-interactable" />
-        </horizontal>
-      </custom-list>
-    </horizontal>
-  </vertical>
+<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+	xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+	<vertical vertical-fit='Unconstrained'>
+		<horizontal pad-bottom='4' horizontal-fit='PreferredSize'>
+			<text text='BeatFollower Add To' align='Center' font-size='4'/>
+		</horizontal>
+		<horizontal horizontal-fit='PreferredSize'>
+			<custom-list pref-height='10' visible-cells='~customlist-list-visiblecells' cell-size='30' id='customlist-list' contents='customlists' list-direction='Horizontal'>
+				<horizontal align='Center'>
+					<button text='~list-name' on-click="list-share-pressed" interactable="~button-interactable"/>
+				</horizontal>
+			</custom-list>
+		</horizontal>
+		<horizontal pad-top='5' horizontal-fit='PreferredSize'>
+			<custom-list pref-height='10' visible-cells='~customlist-list2-visiblecells' cell-size='30' id='customlist-list2' contents='customlists2' list-direction='Horizontal'>
+				<horizontal align='Center'>
+					<button text='~list-name' on-click="list-share-pressed" interactable="~button-interactable"/>
+				</horizontal>
+			</custom-list>
+		</horizontal>
+	</vertical>
 </bg>
