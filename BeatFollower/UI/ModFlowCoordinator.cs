@@ -9,15 +9,15 @@ namespace BeatFollower.UI
 	internal class ModFlowCoordinator : FlowCoordinator, IInitializable, IDisposable
 	{
 		private MainFlowCoordinator _mainFlowCoordinator = null!;
-		private FollowerListViewController _followerListViewController = null!;
+		private SettingsMenuViewController _settingsMenuViewController = null!;
 
 		private MenuButton? _menuButton;
 
 		[Inject]
-		internal void Construct(MainFlowCoordinator mainFlowCoordinator, FollowerListViewController followerListViewController)
+		internal void Construct(MainFlowCoordinator mainFlowCoordinator, SettingsMenuViewController settingsMenuViewController)
 		{
 			_mainFlowCoordinator = mainFlowCoordinator;
-			_followerListViewController = followerListViewController;
+			_settingsMenuViewController = settingsMenuViewController;
 		}
 
 		public void Initialize()
@@ -39,7 +39,7 @@ namespace BeatFollower.UI
 				showBackButton = true;
 			}
 
-			ProvideInitialViewControllers(_followerListViewController);
+			ProvideInitialViewControllers(_settingsMenuViewController);
 		}
 
 		public void Dispose()

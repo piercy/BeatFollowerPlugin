@@ -1,0 +1,16 @@
+﻿<stack xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+	   xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+	   vertical-fit='Unconstrained'>
+	<vertical>
+
+		<horizontal bg='panel-top' pad-left='15' pad-right='15' horizontal-fit='PreferredSize'>
+			<text text='Settings' align='Center' font-size='8'/>
+		</horizontal>
+	<vertical>
+
+			<text word-wrapping='true' text='First Time Setup' align='Left' font-size='8'/>
+			<string-setting id="pin" text="Enter API Pin" on-change="pin_onchange" />
+
+	</vertical>
+	</vertical>
+</stack>

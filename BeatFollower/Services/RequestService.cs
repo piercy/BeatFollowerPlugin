@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using SiraUtil.Logging;
 using UnityEngine.Networking;
 
@@ -16,36 +17,40 @@ namespace BeatFollower.Services
 			_config = config;
 		}
 
-		public IEnumerator Get(string path, Action<string> callback)
+		public IEnumerator Get(string path, Action<string> callback, Dictionary<string, string>? headers = null)
 		{
 			var url = _config.AggregatedApiUrl + path;
-			_siraLog.Debug($"GET: {url}");
+			_siraLog.Info($"GET: {url}");
 
-			// if (_config.Debug.HasValue && _config.Debug.Value)
 			if (_config.Debug)
 			{
-				_siraLog.Debug($"ApiKey: {_config.AggregatedApiKey}");
+				_siraLog.Info($"ApiKey: {_config.AggregatedApiKey}");
 			}
 
-			if (string.IsNullOrEmpty(_config.AggregatedApiKey) || _config.AggregatedApiKey == PluginConfig.DEFAULT_API_KEY)
+			var uwr = UnityWebRequest.Get(url);
+			if (_config.AggregatedApiKey != PluginConfig.DEFAULT_API_KEY)
 			{
-				_siraLog.Debug("API Key is either default or empty");
+				uwr.SetRequestHeader("ApiKey", _config.AggregatedApiKey);
+			}
+
+			if (headers != null)
+			{
+				foreach (var header in headers)
+				{
+					uwr.SetRequestHeader(header.Key, header.Value);
+				}
+			}
+
+			yield return uwr.SendWebRequest();
+			if (uwr.isNetworkError || uwr.isHttpError)
+			{
+				_siraLog.Error($"Error While Getting: {url} {uwr.responseCode} {uwr.error}");
 			}
 			else
 			{
-				var uwr = UnityWebRequest.Get(url);
-				uwr.SetRequestHeader("ApiKey", _config.AggregatedApiKey);
-				yield return uwr.SendWebRequest();
-				if (uwr.isNetworkError || uwr.isHttpError)
-				{
-					_siraLog.Error($"Error While Getting: {url} {uwr.responseCode} {uwr.error}");
-				}
-				else
-				{
-					var responseString = uwr.downloadHandler.text;
-					_siraLog.Debug("Response : " + responseString);
-					callback?.Invoke(responseString);
-				}
+				var responseString = uwr.downloadHandler.text;
+				_siraLog.Info("Response : " + responseString);
+				callback?.Invoke(responseString);
 			}
 		}
 

@@ -10,6 +10,7 @@ namespace BeatFollower.Installers
 		{
 			Container.Bind<FollowerListObject>().AsTransient();
 			Container.Bind<FollowerListViewController>().FromNewComponentAsViewController().AsSingle();
+			Container.Bind<SettingsMenuViewController>().FromNewComponentAsViewController().AsSingle();
 			Container.BindInterfacesTo<ModFlowCoordinator>().FromNewComponentOnNewGameObject().AsSingle();
 
 			Container.Bind<CustomListObject>().AsTransient();
