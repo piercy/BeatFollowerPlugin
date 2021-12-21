@@ -19,6 +19,7 @@ namespace BeatFollower.UI
 		private PluginConfig _config;
 		private bool noApiKey = false;
 		private RequestService _requestService;
+		public EventHandler ShowFollowerListEvent;
 
 		[Inject]
 		internal void Construct(DiContainer container, SiraLog siraLog, PluginConfig config, RequestService requestService)
@@ -44,6 +45,11 @@ namespace BeatFollower.UI
 			}
 		}
 
+		[UIAction("show-follower-list")]
+		public void showFollowerList_Pressed()
+		{
+			ShowFollowerListEvent?.Invoke(this, null);
+		}
 		[UIAction("pin_onchange")]
 		public void Pin_OnChange(string value)
 		{

@@ -10,25 +10,34 @@ namespace BeatFollower.UI
 	{
 		private MainFlowCoordinator _mainFlowCoordinator = null!;
 		private SettingsMenuViewController _settingsMenuViewController = null!;
+		private FollowerListViewController _followerListViewController;
 
 		private MenuButton? _menuButton;
 
 		[Inject]
-		internal void Construct(MainFlowCoordinator mainFlowCoordinator, SettingsMenuViewController settingsMenuViewController)
+		internal void Construct(MainFlowCoordinator mainFlowCoordinator, SettingsMenuViewController settingsMenuViewController, FollowerListViewController followerListViewController)
 		{
 			_mainFlowCoordinator = mainFlowCoordinator;
 			_settingsMenuViewController = settingsMenuViewController;
+			_followerListViewController = followerListViewController;
 		}
 
 		public void Initialize()
 		{
 			_menuButton ??= new MenuButton(nameof(BeatFollower), Showtime);
 			MenuButtons.instance.RegisterButton(_menuButton);
+			_settingsMenuViewController.ShowFollowerListEvent += ShowFollowerListEvent;
+		}
+
+		private void ShowFollowerListEvent(object sender, EventArgs e)
+		{
+			PresentViewController(_followerListViewController);
 		}
 
 		private void Showtime()
 		{
 			_mainFlowCoordinator.PresentFlowCoordinator(this);
+
 		}
 
 		protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
@@ -59,7 +68,15 @@ namespace BeatFollower.UI
 
 		protected override void BackButtonWasPressed(ViewController _)
 		{
-			_mainFlowCoordinator.DismissFlowCoordinator(this);
+			if (_followerListViewController.isActivated)
+			{
+				DismissViewController(_followerListViewController);
+			}
+			else
+			{
+				//DismissViewController(_settingsMenuViewController);
+				_mainFlowCoordinator.DismissFlowCoordinator(this);
+			}
 		}
 	}
 }
