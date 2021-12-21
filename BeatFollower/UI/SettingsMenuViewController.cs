@@ -17,9 +17,22 @@ namespace BeatFollower.UI
 		private DiContainer _container = null!;
 		private SiraLog _siraLog = null!;
 		private PluginConfig _config;
-		private bool noApiKey = false;
+		private bool _firstRun = false;
 		private RequestService _requestService;
 		public EventHandler ShowFollowerListEvent;
+
+		[UIValue("first-run")]
+		public bool FirstRun
+		{
+			get => _firstRun;
+			set
+			{
+				_firstRun = value;
+				NotifyPropertyChanged();
+			}
+		}
+		[UIValue("inverted-first-run")]
+		public bool InvertedFirstRun => !_firstRun;
 
 		[Inject]
 		internal void Construct(DiContainer container, SiraLog siraLog, PluginConfig config, RequestService requestService)
@@ -38,13 +51,18 @@ namespace BeatFollower.UI
 			{
 			}
 
-			if (_config.ApiKey == "0000000-0000000-0000000-0000000")
+			if (_config.AggregatedApiKey == "0000000-0000000-0000000-0000000")
 			{
-				noApiKey = true;
+				FirstRun = true;
 				_siraLog.Info("No API Key has been provided");
 			}
 		}
 
+		[UIAction("enter-pin-pressed")]
+		public void enterPin_Pressed()
+		{
+			FirstRun = true;
+		}
 		[UIAction("show-follower-list")]
 		public void showFollowerList_Pressed()
 		{
@@ -66,6 +84,7 @@ namespace BeatFollower.UI
 				{
 					_config.ApiKey = keyResponse.apiKey;
 				}
+				FirstRun = false;
 			}, new Dictionary<string, string>() {{"x-api-pin", value}}));
 		}
 	}
