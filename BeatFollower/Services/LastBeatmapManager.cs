@@ -2,6 +2,6 @@
 {
     internal class LastBeatmapManager
     {
-	    public IBeatmapLevel LastSong { get; set; } = null!;
+	    public IDifficultyBeatmap LastBeatmap { get; set; } = null!;
     }
 }

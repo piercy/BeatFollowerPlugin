@@ -35,7 +35,7 @@ namespace BeatFollower.UI
 			_siraLog.Debug($"Share Pressed: {listName} {_id}");
 
 			ButtonInteractable = false;
-			_activityService.SubmitRecommendation(_lastBeatmapManager.LastSong, _id);
+			_activityService.SubmitRecommendation(_lastBeatmapManager.LastBeatmap, _id);
 		}
 
 		private bool _buttonInteractable = true;

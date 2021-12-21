@@ -15,7 +15,7 @@ namespace BeatFollower.Services
 
 		public void Dispose()
 		{
-			_lastBeatmapManager.LastSong = _difficultyBeatmap.level;
+			_lastBeatmapManager.LastBeatmap = _difficultyBeatmap;
 		}
 	}
 }

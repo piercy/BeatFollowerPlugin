@@ -13,12 +13,14 @@ namespace BeatFollower.Services
 		private readonly SiraLog _siraLog;
 		private readonly RequestService _requestService;
 		private readonly StandardLevelScenesTransitionSetupDataSO _standardLevelScenesTransitionSetupDataSo;
+		private readonly LastBeatmapManager _lastBeatmapManager;
 
-		public ActivityService(SiraLog siraLog, RequestService requestService, StandardLevelScenesTransitionSetupDataSO standardLevelScenesTransitionSetupDataSo)
+		public ActivityService(SiraLog siraLog, RequestService requestService, StandardLevelScenesTransitionSetupDataSO standardLevelScenesTransitionSetupDataSo, LastBeatmapManager lastBeatmapManager)
 		{
 			_siraLog = siraLog;
 			_requestService = requestService;
 			_standardLevelScenesTransitionSetupDataSo = standardLevelScenesTransitionSetupDataSo;
+			_lastBeatmapManager = lastBeatmapManager;
 		}
 
 		public void Initialize()
@@ -102,11 +104,12 @@ namespace BeatFollower.Services
 			}
 		}
 
-		public void SubmitRecommendation(IBeatmapLevel level, string listId = "")
+		public void SubmitRecommendation(IDifficultyBeatmap beatmap, string listId = "")
 		{
 			_siraLog.Debug("Submitting Level");
 			try
 			{
+				var level = beatmap.level;
 				if (level.IsWip())
 				{
 					_siraLog.Debug("WIP so not sending recommendation.");
@@ -119,7 +122,9 @@ namespace BeatFollower.Services
 					SongName = level.songName,
 					SongSubName = level.songSubName,
 					SongAuthorName = level.songAuthorName,
-					LevelAuthorName = level.levelAuthorName
+					LevelAuthorName = level.levelAuthorName,
+					Difficulty = beatmap.difficulty,
+					Characteristic = beatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName
 				};
 
 				var json = JsonConvert.SerializeObject(recommendation);
