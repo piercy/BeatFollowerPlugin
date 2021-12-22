@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BeatFollower.Models;
 using BeatFollower.Services;
 using BeatSaberMarkupLanguage.Attributes;
@@ -69,23 +70,34 @@ namespace BeatFollower.UI
 			ShowFollowerListEvent?.Invoke(this, null);
 		}
 		[UIAction("pin_onchange")]
-		public void Pin_OnChange(string value)
+		public async Task Pin_OnChange(string value)
 		{
 			_siraLog.Info($"Pin: {value}");
-			SharedCoroutineStarter.instance.StartCoroutine(_requestService.Get("apikey/get", response =>
+			var httpResponse = await _requestService.Get($"apikey/get", new Dictionary<string, string>() {{"x-api-pin", value}});
+			if (httpResponse != null)
 			{
-				var keyResponse = JsonConvert.DeserializeObject<ApiKeyResponse>(response);
-				_siraLog.Info("ApiKey: " + keyResponse.apiKey);
-				if (_config.Debug)
+
+				if (httpResponse.Successful)
 				{
-					_config.ApiKeyDebug = keyResponse.apiKey;
+
+					var keyResponse = JsonConvert.DeserializeObject<ApiKeyResponse>(await httpResponse.ReadAsStringAsync());
+					_siraLog.Info("ApiKey: " + keyResponse.apiKey);
+					if (_config.Debug)
+					{
+						_config.ApiKeyDebug = keyResponse.apiKey;
+					}
+					else
+					{
+						_config.ApiKey = keyResponse.apiKey;
+					}
+
+					FirstRun = false;
 				}
 				else
 				{
-					_config.ApiKey = keyResponse.apiKey;
+					_siraLog.Error(await httpResponse.Error());
 				}
-				FirstRun = false;
-			}, new Dictionary<string, string>() {{"x-api-pin", value}}));
+			}
 		}
 	}
 }

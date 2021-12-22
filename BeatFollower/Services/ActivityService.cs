@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Threading.Tasks;
 using BeatFollower.Models;
 using BeatFollower.Utilities;
 using SiraUtil.Logging;
@@ -33,7 +34,7 @@ namespace BeatFollower.Services
 			_standardLevelScenesTransitionSetupDataSo.didFinishEvent -= DidFinishLevelHandler;
 		}
 
-		public void SubmitActivity(StandardLevelScenesTransitionSetupDataSO setupData, LevelCompletionResults levelCompletionResults)
+		public async Task SubmitActivity(StandardLevelScenesTransitionSetupDataSO setupData, LevelCompletionResults levelCompletionResults)
 		{
 			try
 			{
@@ -94,9 +95,16 @@ namespace BeatFollower.Services
 					activity.Ost = true;
 				}
 
-				var json = JsonConvert.SerializeObject(activity);
+				var httpResponse = await _requestService.Post($"activity/", activity);
 
-				SharedCoroutineStarter.instance.StartCoroutine(_requestService.Post("activity/", json));
+				if (httpResponse != null)
+				{
+					if (!httpResponse.Successful)
+					{
+						throw new Exception(httpResponse.Code + await httpResponse.Error());
+					}
+
+				}
 			}
 			catch (Exception ex)
 			{
@@ -104,7 +112,7 @@ namespace BeatFollower.Services
 			}
 		}
 
-		public void SubmitRecommendation(IDifficultyBeatmap beatmap, string listId = "")
+		public async Task SubmitRecommendation(IDifficultyBeatmap beatmap, string listId = "")
 		{
 			_siraLog.Debug("Submitting Level");
 			try
@@ -127,9 +135,17 @@ namespace BeatFollower.Services
 					Characteristic = beatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName
 				};
 
-				var json = JsonConvert.SerializeObject(recommendation);
 
-				SharedCoroutineStarter.instance.StartCoroutine(_requestService.Post("recommendation/" + listId, json));
+				var httpResponse = await _requestService.Post($"recommendation/" + listId, recommendation);
+
+				if (httpResponse != null)
+				{
+					if (!httpResponse.Successful)
+					{
+						throw new Exception(httpResponse.Code + await httpResponse.Error());
+					}
+
+				}
 			}
 			catch (Exception ex)
 			{

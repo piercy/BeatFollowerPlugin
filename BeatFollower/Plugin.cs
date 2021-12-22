@@ -15,10 +15,11 @@ namespace BeatFollower
 		{
 			zenjector.UseLogger(logger);
 			zenjector.UseMetadataBinder<Plugin>();
-
+			zenjector.UseHttpService();
 			zenjector.Install<BFAppInstaller>(Location.App, conf.Generated<PluginConfig>());
 			zenjector.Install<BFMenuInstaller>(Location.Menu);
 			zenjector.Install<BFGameInstaller>(Location.StandardPlayer);
+
 		}
 	}
 }

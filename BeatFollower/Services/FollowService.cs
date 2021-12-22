@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BeatFollower.Models;
 using Newtonsoft.Json;
 using SiraUtil.Logging;
@@ -19,12 +20,17 @@ namespace BeatFollower.Services
 			_playlistService = playlistService;
 		}
 
-		public void GetFollowing(Action<List<Follower>> callback)
+		public async Task GetFollowing(Action<List<Follower>> callback)
 		{
 			_siraLog.Debug("Called GetFollowing");
-			SharedCoroutineStarter.instance.StartCoroutine(_requestService.Get("following", response =>
+
+			var httpResponse = await _requestService.Get("following");
+
+			if (httpResponse != null)
 			{
-				var following = JsonConvert.DeserializeObject<List<Follower>>(response);
+				var json = await httpResponse.ReadAsStringAsync();
+
+				var following = JsonConvert.DeserializeObject<List<Follower>>(json);
 				foreach (var follower in following)
 				{
 					follower.RecommendedPlaylistInstalled = _playlistService.DoesPlaylistExist(follower.Twitch);
@@ -32,7 +38,7 @@ namespace BeatFollower.Services
 				}
 
 				callback(following);
-			}));
+			}
 		}
 	}
 }
