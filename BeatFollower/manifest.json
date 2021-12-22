@@ -8,8 +8,8 @@
 	"gameVersion": "1.19.0",
 	"dependsOn": {
 		"BeatSaberMarkupLanguage": "^1.6.0",
-		"SiraUtil": "^3.0.0",
-		"SongCore": "^3.8.0",
+		"SiraUtil": "^3.0.1",
+		"SongCore": "^3.9.0",
 		"BSIPA": "^4.2.1",
 		"BeatSaberPlaylistsLib": "^1.5.1"
 	}
