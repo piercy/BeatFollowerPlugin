@@ -1,7 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 using BeatFollower.Models;
 using Newtonsoft.Json;
 using SiraUtil.Logging;
+
 
 namespace BeatFollower.Services
 {
@@ -18,19 +21,35 @@ namespace BeatFollower.Services
 			_requestService = requestService;
 		}
 
-		public void DownloadPlaylist(string twitch, string playlistType = "Recommended")
+		public async Task DownloadPlaylist(string twitch, string playlistType = "Recommended")
 		{
 			_siraLog.Debug("Requesting playlist");
 
-			SharedCoroutineStarter.instance.StartCoroutine(_requestService.Get($"feed/playlist/{playlistType}/{twitch}/BeatFollower{playlistType}-{twitch}.json", playlistJson =>
-			{
-				var playlistFileName = $"BeatFollowerRecommended-{twitch}.json";
-				Directory.CreateDirectory(PlaylistFolderPath);
 
-				var playListPath = Path.Combine(PlaylistFolderPath, playlistFileName);
-				_siraLog.Debug("Writing Playlist: " + playListPath + " Length: " + playlistJson.Length);
-				File.WriteAllText(playListPath, playlistJson);
-			}));
+			var httpResponse = await _requestService.Get($"feed/playlist/{playlistType}/{twitch}/BeatFollower{playlistType}-{twitch}.json");
+
+			if (httpResponse != null)
+			{
+				if (httpResponse.Successful)
+				{
+
+					try
+					{
+						var playlistManager = BeatSaberPlaylistsLib.PlaylistManager.DefaultManager;
+						var playlist = playlistManager.DefaultHandler.Deserialize(await httpResponse.ReadAsStreamAsync());
+						playlistManager.StorePlaylist(playlist);
+					}
+					catch (Exception e)
+					{
+						_siraLog.Info("Before Error");
+						_siraLog.Error(e);
+					}
+				}
+				else
+				{
+					_siraLog.Error(await httpResponse.Error());
+				}
+			}
 		}
 
 		public bool DoesPlaylistExist(string twitch, string playlistType = "Recommended")
@@ -64,6 +83,16 @@ namespace BeatFollower.Services
 			}
 
 			return 0;
+		}
+
+		public Stream GenerateStreamFromString(string s)
+		{
+			var stream = new MemoryStream();
+			var writer = new StreamWriter(stream);
+			writer.Write(s);
+			writer.Flush();
+			stream.Position = 0;
+			return stream;
 		}
 	}
 }

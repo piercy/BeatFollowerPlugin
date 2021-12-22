@@ -1,15 +1,16 @@
 {
-  "$schema": "https://raw.githubusercontent.com/beat-saber-modding-group/BSIPA-MetadataFileSchema/master/Schema.json",
-  "id": "BeatFollower",
-  "name": "BeatFollower",
-  "author": "Piercy",
-  "version": "1.4.0",
-  "description": "A plugin to record activities and song recommendations to your BeatFollower.com profile",
-  "gameVersion": "1.19.0",
-  "dependsOn": {
-    "BeatSaberMarkupLanguage": "^1.6.0",
-    "SiraUtil": "^3.0.0-rc11",
-    "SongCore": "^3.8.0",
-    "BSIPA": "^4.2.1-pre.2"
-  }
+	"$schema": "https://raw.githubusercontent.com/beat-saber-modding-group/BSIPA-MetadataFileSchema/master/Schema.json",
+	"id": "BeatFollower",
+	"name": "BeatFollower",
+	"author": "Piercy",
+	"version": "1.4.0",
+	"description": "A plugin to record activities and song recommendations to your BeatFollower.com profile",
+	"gameVersion": "1.19.0",
+	"dependsOn": {
+		"BeatSaberMarkupLanguage": "^1.6.0",
+		"SiraUtil": "^3.0.0",
+		"SongCore": "^3.8.0",
+		"BSIPA": "^4.2.1",
+		"BeatSaberPlaylistsLib": "^1.5.1"
+	}
 }
