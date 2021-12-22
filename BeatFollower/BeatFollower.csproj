@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net472</TargetFramework>
+        <TargetFramework>net48</TargetFramework>
         <OutputType>Library</OutputType>
         <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
@@ -33,6 +33,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Reference Include="BeatSaberPlaylistsLib, Version=1.5.1.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>G:\SteamLibrary\steamapps\common\Beat Saber\Libs\BeatSaberPlaylistsLib.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.dll</HintPath>
             <Private>False</Private>
