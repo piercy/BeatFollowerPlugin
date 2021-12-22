@@ -11,6 +11,7 @@
 		"SiraUtil": "^3.0.1",
 		"SongCore": "^3.9.0",
 		"BSIPA": "^4.2.1",
-		"BeatSaberPlaylistsLib": "^1.5.1"
+		"BeatSaberPlaylistsLib": "^1.5.1",
+		"BS Utils": "^1.11.1"
 	}
 }
