@@ -1,6 +1,7 @@
 ﻿using BeatFollower.UI;
 using BS_Utils.Utilities;
 using HMUI;
+using IPA.Utilities;
 using SiraUtil.Affinity;
 using Zenject;
 
@@ -34,7 +35,8 @@ namespace BeatFollower.AffinityPatches
 		{
 			if (levelCompletionResults.levelEndAction == LevelCompletionResults.LevelEndAction.None)
 			{
-				fc.InvokeMethod("SetTopScreenViewController", _endLevelViewController.Value, ViewController.AnimationType.None);
+
+				fc.InvokeMethod<object?,FlowCoordinator>("SetTopScreenViewController", _endLevelViewController.Value, ViewController.AnimationType.None);
 			}
 		}
 	}

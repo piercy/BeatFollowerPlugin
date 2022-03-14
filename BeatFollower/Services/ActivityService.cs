@@ -49,14 +49,17 @@ namespace BeatFollower.Services
 				}
 
 
-				var maxScore = ScoreModel.MaxRawScoreForNumberOfNotes(difficultyBeatmap.beatmapData.cuttableNotesCount);
-				var normalizedAcc = ((double)levelCompletionResults.rawScore / maxScore) * 100;
+				var beatMapData = await difficultyBeatmap.GetBeatmapDataAsync(setupData.environmentInfo);
+				var maxScore = ScoreModel.ComputeMaxMultipliedScoreForBeatmap(beatMapData);
+
+					//difficultyBeatmap.beatmapData.cuttableNotesCount);
+				var normalizedAcc = ((double)levelCompletionResults.multipliedScore / maxScore) * 100;
 
 				_siraLog.Debug("levelCompletionResults.energy " + levelCompletionResults.energy);
 
 				var activity = new Activity
 				{
-					NoFail = (levelCompletionResults.gameplayModifiers.noFailOn0Energy || levelCompletionResults.gameplayModifiers.demoNoFail) && Math.Abs(levelCompletionResults.energy) <= 0,
+					NoFail = (levelCompletionResults.gameplayModifiers.noFailOn0Energy && Math.Abs(levelCompletionResults.energy) <= 0),
 					WipMap = currentSong.levelID.EndsWith("WIP"),
 					PracticeMode = setupData.practiceSettings != null,
 					Difficulty = difficultyBeatmap.difficulty,
@@ -67,21 +70,20 @@ namespace BeatFollower.Services
 					LevelAuthorName = currentSong.levelAuthorName,
 					FullCombo = levelCompletionResults.fullCombo,
 					EndSongTime = levelCompletionResults.endSongTime.ToString("##.##", new CultureInfo("en-US")),
-					SongDuration = levelCompletionResults.songDuration.ToString("##.##", new CultureInfo("en-US")),
 					Accuracy = normalizedAcc.ToString("##.##", new CultureInfo("en-US")),
 					Is90 = difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("90Degree")
 				};
 
 				if (activity.Accuracy == "NaN")
 				{
-					_siraLog.Debug("modified score: " + levelCompletionResults.rawScore);
+					_siraLog.Debug("modified score: " + levelCompletionResults.multipliedScore);
 					_siraLog.Debug("maxScore: " + maxScore);
 					_siraLog.Debug("acc: " + normalizedAcc);
 				}
 
 				// cant be 90 and 360 at the same time, so if we've already detected 90, cant be 360, this is a best guess effort
 				activity.Is360 = (difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("360Degree") ||
-				                  difficultyBeatmap.beatmapData.spawnRotationEventsCount > 0) && !activity.Is90;
+				                  beatMapData.spawnRotationEventsCount > 0) && !activity.Is90;
 				activity.OneSaber = difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("OneSaber");
 
 				if (currentSong is CustomBeatmapLevel customBeatmapLevel)

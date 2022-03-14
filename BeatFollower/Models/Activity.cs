@@ -19,6 +19,5 @@
         public bool FullCombo { get; set; }
         public string EndSongTime { get; set; }
         public string Accuracy { get; set; }
-        public string SongDuration { get; set; }
     }
 }

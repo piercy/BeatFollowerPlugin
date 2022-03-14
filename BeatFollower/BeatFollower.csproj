@@ -33,7 +33,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Reference Include="BeatSaberPlaylistsLib, Version=1.5.1.0, Culture=neutral, PublicKeyToken=null">
+        <Reference Include="BeatSaberPlaylistsLib, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>G:\SteamLibrary\steamapps\common\Beat Saber\Libs\BeatSaberPlaylistsLib.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine">
