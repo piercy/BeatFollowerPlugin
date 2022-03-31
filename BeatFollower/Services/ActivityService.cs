@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using BeatFollower.Models;
 using BeatFollower.Utilities;
+using IPA.Logging;
 using SiraUtil.Logging;
 using Zenject;
 
@@ -15,13 +16,15 @@ namespace BeatFollower.Services
 		private readonly RequestService _requestService;
 		private readonly StandardLevelScenesTransitionSetupDataSO _standardLevelScenesTransitionSetupDataSo;
 		private readonly LastBeatmapManager _lastBeatmapManager;
+		private readonly PlayerDataModel _playerDataModel;
 
-		public ActivityService(SiraLog siraLog, RequestService requestService, StandardLevelScenesTransitionSetupDataSO standardLevelScenesTransitionSetupDataSo, LastBeatmapManager lastBeatmapManager)
+		public ActivityService(SiraLog siraLog, RequestService requestService, StandardLevelScenesTransitionSetupDataSO standardLevelScenesTransitionSetupDataSo, LastBeatmapManager lastBeatmapManager, PlayerDataModel playerDataModel)
 		{
 			_siraLog = siraLog;
 			_requestService = requestService;
 			_standardLevelScenesTransitionSetupDataSo = standardLevelScenesTransitionSetupDataSo;
 			_lastBeatmapManager = lastBeatmapManager;
+			_playerDataModel = playerDataModel;
 		}
 
 		public void Initialize()
@@ -48,11 +51,9 @@ namespace BeatFollower.Services
 					return;
 				}
 
-
-				var beatMapData = await difficultyBeatmap.GetBeatmapDataAsync(setupData.environmentInfo);
+				var beatMapData = await difficultyBeatmap.GetBeatmapDataAsync(setupData.environmentInfo, _playerDataModel.playerData.playerSpecificSettings);
 				var maxScore = ScoreModel.ComputeMaxMultipliedScoreForBeatmap(beatMapData);
 
-					//difficultyBeatmap.beatmapData.cuttableNotesCount);
 				var normalizedAcc = ((double)levelCompletionResults.multipliedScore / maxScore) * 100;
 
 				_siraLog.Debug("levelCompletionResults.energy " + levelCompletionResults.energy);
