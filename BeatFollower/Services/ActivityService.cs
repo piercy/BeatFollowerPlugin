@@ -129,7 +129,6 @@ namespace BeatFollower.Services
 
 				var recommendation = new Recommendation
 				{
-					Hash = SongCore.Utilities.Hashing.GetCustomLevelHash(level as CustomPreviewBeatmapLevel),
 					SongName = level.songName,
 					SongSubName = level.songSubName,
 					SongAuthorName = level.songAuthorName,
@@ -137,6 +136,17 @@ namespace BeatFollower.Services
 					Difficulty = beatmap.difficulty,
 					Characteristic = beatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName
 				};
+
+				if (level is CustomBeatmapLevel customBeatmapLevel)
+				{
+					recommendation.Hash = SongCore.Utilities.Hashing.GetCustomLevelHash(customBeatmapLevel);
+				}
+				else
+				{
+					_siraLog.Debug("OST Level");
+					recommendation.Hash = level.levelID;
+				}
+
 
 
 				var httpResponse = await _requestService.Post($"recommendation/" + listId, recommendation);
