@@ -115,16 +115,16 @@ namespace BeatFollower.UI
 			List2VisibleCells = customListUi2.Count;
 
 			StartCoroutine(RecalculateListWidths());
-			customListsList.tableView.ReloadData();
-			customListsList2.tableView.ReloadData();
+			customListsList.TableView.ReloadData();
+			customListsList2.TableView.ReloadData();
 		}
 
 		private IEnumerator RecalculateListWidths()
 		{
 			yield return new WaitForEndOfFrame(); // Unity Moment
 			// Manually set the list container to the correct size
-			customListsListRect.sizeDelta = new Vector2(customListUi.Count * customListsList.cellSize, customListsListRect.sizeDelta.y);
-			customListList2Rect.sizeDelta = new Vector2(customListUi2.Count * customListsList2.cellSize, customListList2Rect.sizeDelta.y);
+			customListsListRect.sizeDelta = new Vector2(customListUi.Count * customListsList.CellSizeValue, customListsListRect.sizeDelta.y);
+			customListList2Rect.sizeDelta = new Vector2(customListUi2.Count * customListsList2.CellSizeValue, customListList2Rect.sizeDelta.y);
 		}
 	}
 }

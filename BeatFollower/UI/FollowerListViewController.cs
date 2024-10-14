@@ -55,7 +55,7 @@ namespace BeatFollower.UI
                 _siraLog.Error(e);
             }
 
-            followerList.tableView.ReloadData();
+            followerList.TableView.ReloadData();
         }
 
         [UIComponent("follower-list")]

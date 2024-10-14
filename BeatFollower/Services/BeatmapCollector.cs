@@ -5,17 +5,21 @@ namespace BeatFollower.Services
 	internal class BeatmapCollector : IDisposable
 	{
 		private readonly LastBeatmapManager _lastBeatmapManager;
-		private readonly IDifficultyBeatmap _difficultyBeatmap;
+		private readonly BeatmapLevel _lastBeatmapLevel;
+		private readonly BeatmapKey _lastBeatmapKey;
 
-		public BeatmapCollector(LastBeatmapManager lastBeatmapManager, IDifficultyBeatmap difficultyBeatmap)
+		public BeatmapCollector(LastBeatmapManager lastBeatmapManager, BeatmapLevel lastBeatmapLevel, BeatmapKey lastBeatmapKey)
 		{
 			_lastBeatmapManager = lastBeatmapManager;
-			_difficultyBeatmap = difficultyBeatmap;
+			_lastBeatmapLevel = lastBeatmapLevel;
+			_lastBeatmapKey = lastBeatmapKey;
+
 		}
 
 		public void Dispose()
 		{
-			_lastBeatmapManager.LastBeatmap = _difficultyBeatmap;
+			_lastBeatmapManager.LastBeatmapLevel = _lastBeatmapLevel;
+			_lastBeatmapManager.LastBeatmapKey = _lastBeatmapKey;
 		}
 	}
 }

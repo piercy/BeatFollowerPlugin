@@ -42,17 +42,16 @@ namespace BeatFollower.Services
 			try
 			{
 				var levelEndState = levelCompletionResults.levelEndStateType;
-				var difficultyBeatmap = setupData.difficultyBeatmap;
-				var currentSong = difficultyBeatmap.level;
+				var beatmapKey = setupData.beatmapKey;
+				var beatmapLevel = setupData.beatmapLevel;
 
-				if (currentSong.IsWip())
+				if (beatmapLevel.IsWip())
 				{
 					_siraLog.Debug("WIP so not sending activity.");
 					return;
 				}
 
-				var beatMapData = await difficultyBeatmap.GetBeatmapDataAsync(setupData.environmentInfo, _playerDataModel.playerData.playerSpecificSettings);
-				var maxScore = ScoreModel.ComputeMaxMultipliedScoreForBeatmap(beatMapData);
+				var maxScore = ScoreModel.ComputeMaxMultipliedScoreForBeatmap(setupData.transformedBeatmapData);
 
 				var normalizedAcc = ((double)levelCompletionResults.multipliedScore / maxScore) * 100;
 
@@ -61,18 +60,18 @@ namespace BeatFollower.Services
 				var activity = new Activity
 				{
 					NoFail = (levelCompletionResults.gameplayModifiers.noFailOn0Energy && Math.Abs(levelCompletionResults.energy) <= 0),
-					WipMap = currentSong.levelID.EndsWith("WIP"),
+					WipMap = beatmapLevel.levelID.EndsWith("WIP"),
 					PracticeMode = setupData.practiceSettings != null,
-					Difficulty = difficultyBeatmap.difficulty,
+					Difficulty = beatmapKey.difficulty,
 					EndType = levelEndState,
-					SongName = currentSong.songName,
-					SongSubName = currentSong.songSubName,
-					SongAuthorName = currentSong.songAuthorName,
-					LevelAuthorName = currentSong.levelAuthorName,
+					SongName = beatmapLevel.songName,
+					SongSubName = beatmapLevel.songSubName,
+					SongAuthorName = beatmapLevel.songAuthorName,
+					LevelAuthorName = string.Join(" ", beatmapLevel.allMappers),
 					FullCombo = levelCompletionResults.fullCombo,
 					EndSongTime = levelCompletionResults.endSongTime.ToString("##.##", new CultureInfo("en-US")),
 					Accuracy = normalizedAcc.ToString("##.##", new CultureInfo("en-US")),
-					Is90 = difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("90Degree")
+					Is90 = beatmapKey.beatmapCharacteristic.serializedName.Equals("90Degree")
 				};
 
 				if (activity.Accuracy == "NaN")
@@ -83,18 +82,20 @@ namespace BeatFollower.Services
 				}
 
 				// cant be 90 and 360 at the same time, so if we've already detected 90, cant be 360, this is a best guess effort
-				activity.Is360 = (difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("360Degree") ||
-				                  beatMapData.spawnRotationEventsCount > 0) && !activity.Is90;
-				activity.OneSaber = difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName.Equals("OneSaber");
+				activity.Is360 = (beatmapKey.beatmapCharacteristic.serializedName.Equals("360Degree") ||
+				                  setupData.transformedBeatmapData.spawnRotationEventsCount > 0) && !activity.Is90;
+				activity.OneSaber = beatmapKey.beatmapCharacteristic.serializedName.Equals("OneSaber");
 
-				if (currentSong is CustomBeatmapLevel customBeatmapLevel)
+
+				if (beatmapLevel.levelID.ToUpper().StartsWith("CUSTOM_LEVEL_"))
 				{
-					activity.Hash = SongCore.Utilities.Hashing.GetCustomLevelHash(customBeatmapLevel);
+
+					activity.Hash = SongCore.Utilities.Hashing.GetCustomLevelHash(beatmapLevel);
 				}
 				else
 				{
 					_siraLog.Debug("OST Level");
-					activity.Hash = currentSong.levelID;
+					activity.Hash = beatmapLevel.levelID;
 					activity.Ost = true;
 				}
 
@@ -115,13 +116,12 @@ namespace BeatFollower.Services
 			}
 		}
 
-		public async Task SubmitRecommendation(IDifficultyBeatmap beatmap, string listId = "")
+		public async Task SubmitRecommendation(BeatmapLevel beatmapLevel, BeatmapKey beatmapKey, string listId = "")
 		{
 			_siraLog.Debug("Submitting Level");
 			try
 			{
-				var level = beatmap.level;
-				if (level.IsWip())
+				if (beatmapLevel.IsWip())
 				{
 					_siraLog.Debug("WIP so not sending recommendation.");
 					return;
@@ -129,22 +129,22 @@ namespace BeatFollower.Services
 
 				var recommendation = new Recommendation
 				{
-					SongName = level.songName,
-					SongSubName = level.songSubName,
-					SongAuthorName = level.songAuthorName,
-					LevelAuthorName = level.levelAuthorName,
-					Difficulty = beatmap.difficulty,
-					Characteristic = beatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName
+					SongName = beatmapLevel.songName,
+					SongSubName = beatmapLevel.songSubName,
+					SongAuthorName = beatmapLevel.songAuthorName,
+					LevelAuthorName = string.Join(" ", beatmapLevel.allMappers),
+					Difficulty = beatmapKey.difficulty,
+					Characteristic = beatmapKey.beatmapCharacteristic.serializedName
 				};
 
-				if (level is CustomBeatmapLevel customBeatmapLevel)
+				if (beatmapLevel.levelID.ToUpper().StartsWith("CUSTOM_LEVEL_"))
 				{
-					recommendation.Hash = SongCore.Utilities.Hashing.GetCustomLevelHash(customBeatmapLevel);
+					recommendation.Hash = SongCore.Utilities.Hashing.GetCustomLevelHash(beatmapLevel);
 				}
 				else
 				{
 					_siraLog.Debug("OST Level");
-					recommendation.Hash = level.levelID;
+					recommendation.Hash = beatmapLevel.levelID;
 				}
 
 
@@ -168,6 +168,7 @@ namespace BeatFollower.Services
 
 		private void DidFinishLevelHandler(StandardLevelScenesTransitionSetupDataSO setupData, LevelCompletionResults completionResults)
 		{
+
 			SubmitActivity(setupData, completionResults);
 		}
 	}

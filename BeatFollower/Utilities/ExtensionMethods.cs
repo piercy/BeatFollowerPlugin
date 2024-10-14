@@ -2,7 +2,7 @@
 {
     public static class ExtensionMethods
     {
-        public static bool IsWip(this IBeatmapLevel level)
+        public static bool IsWip(this BeatmapLevel level)
         {
             return level.levelID.EndsWith("WIP");
         }

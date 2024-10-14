@@ -25,7 +25,7 @@ namespace BeatFollower.UI
 		public void Initialize()
 		{
 			_menuButton ??= new MenuButton(nameof(BeatFollower), Showtime);
-			MenuButtons.instance.RegisterButton(_menuButton);
+			MenuButtons.Instance.RegisterButton(_menuButton);
 			_settingsMenuViewController.ShowFollowerListEvent += ShowFollowerListEvent;
 		}
 
@@ -37,7 +37,6 @@ namespace BeatFollower.UI
 		private void Showtime()
 		{
 			_mainFlowCoordinator.PresentFlowCoordinator(this);
-
 		}
 
 		protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
@@ -58,10 +57,7 @@ namespace BeatFollower.UI
 				return;
 			}
 
-			if (MenuButtons.IsSingletonAvailable && BSMLParser.IsSingletonAvailable)
-			{
-				MenuButtons.instance.UnregisterButton(_menuButton);
-			}
+			MenuButtons.Instance.UnregisterButton(_menuButton);
 
 			_menuButton = null!;
 		}
